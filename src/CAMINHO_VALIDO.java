@@ -1,3 +1,0 @@
-public enum CAMINHO_VALIDO {
-    VALIDO, INVALIDO
-}
