@@ -1,27 +1,27 @@
+//import jdk.incubator.vector.IntVector;
+//import jdk.incubator.vector.VectorSpecies;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Hashtable;
+import java.util.Optional;
 import java.util.Vector;
 
 public class Grafo {
+    private final @NotNull Hashtable<Integer,Vector<Integer>> vizinhos;
 
-    private final @NotNull Hashtable<Integer, Vector<Integer>> vizinhos;
-
-    public Grafo(final int key,
-                 @NotNull final Vector<Integer> viz) {
-        this.vizinhos = new Hashtable<>(800);
-        this.vizinhos.put(key, viz);
+    public Grafo(@NotNull final Node No) {
+        this.vizinhos = new Hashtable<>(1024);
+        this.vizinhos.put(No.getPosAtual(), No.getVizinhos());
     }
 
     @Contract(pure = true)
     public Grafo() {
-        this.vizinhos = new Hashtable<>(800);
+        this.vizinhos = new Hashtable<>(1024);
     }
 
-    public final void insereGrafo(int key,
-                                  @NotNull Vector<Integer> viz) {
-        this.vizinhos.putIfAbsent(key, viz);
+    public final void insereGrafo(@NotNull final Node No) {
+        this.vizinhos.putIfAbsent(No.getPosAtual(), No.getVizinhos());
     }
 
     @Contract(pure = true)
@@ -30,7 +30,7 @@ public class Grafo {
     }
 
     @Contract(pure = true)
-    public final Vector<Integer> getVizinhosNo(int No) {
-        return this.vizinhos.get(No);
+    public final Optional<Vector<Integer>> getVizinhosNo(int No) {
+        return Optional.ofNullable(this.vizinhos.get(No));
     }
 }

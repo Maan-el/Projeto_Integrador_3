@@ -10,12 +10,11 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 
 public class ChamoAPI {
-    private final HttpClient client = HttpClient.newHttpClient();
+    private final static HttpClient client = HttpClient.newHttpClient();
 
     @Contract(pure = true)
     private @NotNull String getUrlAPI() {
         return "https://gtm.delary.dev/";
-
     }
 
     @Contract(pure = true)
@@ -74,7 +73,6 @@ public class ChamoAPI {
                 "}";
 
         return sendRequest(URI.create(getUrlInicio()), json);
-
     }
 
     @Contract(pure = true)
@@ -90,9 +88,8 @@ public class ChamoAPI {
 
     // Not tested
     @Contract(pure = true)
-    final public @NotNull CAMINHO_VALIDO fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
-        Gson gson = new Gson();
-
+    final public @NotNull caminhoValido fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
+        final Gson gson = new Gson();
         final String json = "{\n" +
                 "\t\"id\" :" + "\"" + getID() + "\"" + "\n" +
                 "\t\"labirinto\" :" + "\"" + getNomeLabirinto() + "\"" + "\n" +
@@ -102,7 +99,7 @@ public class ChamoAPI {
 
         final String retorno = sendRequest(URI.create(getUrlValidador()), json);
 
-        return CAMINHO_VALIDO.INVALIDO;
+        return gson.fromJson(retorno, caminhoValido.class);
     }
 
     @Contract(pure = true)

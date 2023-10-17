@@ -20,7 +20,7 @@ public class Main {
         System.out.println(saida.isInicio());
 
         Grafo grafo = new Grafo();
-        grafo.insereGrafo(saida.getPosAtual(), saida.getVizinhos());
+        grafo.insereGrafo(saida);
 
         System.out.println(grafo.getVizinhosNo(saida.getPosAtual()));
 
@@ -33,7 +33,7 @@ public class Main {
         System.out.println(saida.isFim());
         System.out.println(saida.isInicio());
 
-        grafo.insereGrafo(saida.getPosAtual(), saida.getVizinhos());
-        System.out.println(grafo.getVizinhosNo(saida.getPosAtual()));
+        grafo.insereGrafo(saida);
+        grafo.getVizinhosNo(saida.getPosAtual()).ifPresent(System.out::println);
     }
 }
