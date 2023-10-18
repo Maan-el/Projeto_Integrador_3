@@ -34,6 +34,7 @@ public class Main {
         System.out.println(saida.isInicio());
 
         grafo.insereGrafo(saida);
+        System.out.println(saida.getPosAtual());
         grafo.getVizinhosNo(saida.getPosAtual()).ifPresent(System.out::println);
     }
 }

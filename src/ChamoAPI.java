@@ -10,7 +10,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 
 public class ChamoAPI {
-    private final static HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client = HttpClient.newHttpClient();
 
     @Contract(pure = true)
     private @NotNull String getUrlAPI() {
