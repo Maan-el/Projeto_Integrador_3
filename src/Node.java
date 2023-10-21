@@ -1,31 +1,9 @@
 import com.google.gson.annotations.SerializedName;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
-public final class Node {
-    @SerializedName("pos_atual")
-    private int posAtual;
-    @SerializedName("inicio")
-    private boolean inicio;
-    @SerializedName("final")
-    private boolean fim;
-    @SerializedName("movimentos")
-    private Vector<Integer> vizinhos;
-
-    public boolean isFim() {
-        return fim;
-    }
-
-    public @NotNull Vector<Integer> getVizinhos() {
-        return vizinhos;
-    }
-
-    public int getPosAtual() {
-        return posAtual;
-    }
-
-    public boolean isInicio() {
-        return inicio;
-    }
+public record Node(@SerializedName("pos_atual") int posAtual,
+                   @SerializedName("inicio") boolean inicio,
+                   @SerializedName("final") boolean fim,
+                   @SerializedName("movimentos") ArrayList<Integer> vizinhos) {
 }
