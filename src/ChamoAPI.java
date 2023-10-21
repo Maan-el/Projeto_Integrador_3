@@ -53,13 +53,13 @@ public class ChamoAPI {
 
     @Contract(pure = true)
     final public String getNomes() throws IOException, InterruptedException {
-        final HttpRequest request = HttpRequest
+        final var request = HttpRequest
                 .newBuilder()
                 .GET()
                 .uri(URI.create(getUrlNomesLab()))
                 .build();
 
-        final HttpResponse<String> response = client
+        final var response = client
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
         return response.body();
@@ -88,7 +88,7 @@ public class ChamoAPI {
 
     // Not tested
     @Contract(pure = true)
-    final public @NotNull caminhoValido fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
+    final public @NotNull CaminhoValido fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         final Gson gson = new Gson();
         final String json = "{\n" +
                 "\t\"id\" :" + "\"" + getID() + "\"" + "\n" +
@@ -99,7 +99,7 @@ public class ChamoAPI {
 
         final String retorno = sendRequest(URI.create(getUrlValidador()), json);
 
-        return gson.fromJson(retorno, caminhoValido.class);
+        return gson.fromJson(retorno, CaminhoValido.class);
     }
 
     @Contract(pure = true)
