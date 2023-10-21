@@ -2,39 +2,25 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 
+// Todas as classes que estão sendo usadas somente para pegar valores de uma API foram substituidas por Records,
+// pois elas possuiam apenas getters e todos os seus valores eram constantes,
+// por isso Record declara intenção melhor que Class.
+
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-
-
         ChamoAPI response = new ChamoAPI();
         String resposta = response.inicio();
 
-        System.out.println(resposta);
-
         Gson gson = new Gson();
-        Node saida = gson.fromJson(resposta, Node.class);
+        Node node = gson.fromJson(resposta, Node.class);
 
-        System.out.println(saida.getVizinhos());
-        System.out.println(saida.getPosAtual());
-        System.out.println(saida.isFim());
-        System.out.println(saida.isInicio());
-
-        Grafo grafo = new Grafo();
-        grafo.insereGrafo(saida);
-
-        System.out.println(grafo.getVizinhosNo(saida.getPosAtual()));
+        Grafo grafo = new Grafo(node);
 
         String next = response.proxMovimento(4);
-        System.out.println(next);
-        saida = gson.fromJson(next, Node.class);
+        node = gson.fromJson(next, Node.class);
 
-        System.out.println(saida.getVizinhos());
-        System.out.println(saida.getPosAtual());
-        System.out.println(saida.isFim());
-        System.out.println(saida.isInicio());
-
-        grafo.insereGrafo(saida);
-        System.out.println(saida.getPosAtual());
-        grafo.getVizinhosNo(saida.getPosAtual()).ifPresent(System.out::println);
+        grafo.insereGrafo(node);
+        grafo.getVizinhosNo(node.posAtual())
+                .ifPresent(System.out::println);
     }
 }
