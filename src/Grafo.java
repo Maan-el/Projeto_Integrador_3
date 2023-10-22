@@ -20,7 +20,7 @@ public class Grafo {
     }
 
     @Contract(pure = true)
-    public final Optional<ArrayList<Integer>> getVizinhosNo(int No) {
-        return Optional.ofNullable(this.vizinhos.get(No));
+    public final Optional<ArrayList<Integer>> getVizinhosNo(final int no) {
+        return Optional.ofNullable(this.vizinhos.get(no));
     }
 }
