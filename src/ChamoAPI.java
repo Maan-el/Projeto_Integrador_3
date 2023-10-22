@@ -51,6 +51,11 @@ public class ChamoAPI {
     public ChamoAPI() {
     }
 
+    /**
+     * @return Retorna os nomes dos labirintos válidos
+     * @throws IOException Erro de conexão
+     * @throws InterruptedException ^C (Processo cancelado)
+     */
     @Contract(pure = true)
     final public String getNomes() throws IOException, InterruptedException {
         final var request = HttpRequest
@@ -75,6 +80,12 @@ public class ChamoAPI {
         return sendRequest(URI.create(getUrlInicio()), json);
     }
 
+    /**
+     * @param No Proximo nó a ser enviado para a API
+     * @return String com o json bruto retornado pela API
+     * @throws IOException Erro de conexão
+     * @throws InterruptedException ^C (Processo cancelado)
+     */
     @Contract(pure = true)
     final public @NotNull String proxMovimento(final int No) throws IOException, InterruptedException {
         final String json = "{\n" +
@@ -86,6 +97,12 @@ public class ChamoAPI {
         return sendRequest(URI.create(getUrlMovimento()), json);
     }
 
+    /**
+     * @param caminho Lista com os passos para ir do início a saída do grafo
+     * @return Classe com a resposta da API dizendo se o caminho é válido e a quantidade de movimentos
+     * @throws IOException Erro de conexão
+     * @throws InterruptedException ^C (Processo cancelado)
+     */
     // Not tested
     @Contract(pure = true)
     final public @NotNull CaminhoValido fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
