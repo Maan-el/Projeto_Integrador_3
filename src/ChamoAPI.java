@@ -8,6 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ChamoAPI {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -29,7 +30,7 @@ public class ChamoAPI {
 
     @Contract(pure = true)
     private @NotNull String getNomeLabirinto() {
-        return "sample_maze";
+        return "very-large-maze";
     }
 
     @Contract(pure = true)
@@ -53,7 +54,7 @@ public class ChamoAPI {
 
     /**
      * @return Retorna os nomes dos labirintos válidos
-     * @throws IOException Erro de conexão
+     * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
     @Contract(pure = true)
@@ -70,8 +71,20 @@ public class ChamoAPI {
         return response.body();
     }
 
+    final public Optional<String> inicio() {
+        String saida;
+
+        try {
+            saida = __inicio();
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+
+        return Optional.of(saida);
+    }
+
     @Contract(pure = true)
-    final public String inicio() throws IOException, InterruptedException {
+    private @NotNull String __inicio() throws IOException, InterruptedException {
         final String json = "{\n" +
                 "\t\"id\": \"" + getID() + "\",\n" +
                 "\t\"labirinto\": \"" + getNomeLabirinto() + "\"\n" +
@@ -83,7 +96,7 @@ public class ChamoAPI {
     /**
      * @param No Proximo nó a ser enviado para a API
      * @return String com o json bruto retornado pela API
-     * @throws IOException Erro de conexão
+     * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
     @Contract(pure = true)
@@ -100,7 +113,7 @@ public class ChamoAPI {
     /**
      * @param caminho Lista com os passos para ir do início a saída do grafo
      * @return Classe com a resposta da API dizendo se o caminho é válido e a quantidade de movimentos
-     * @throws IOException Erro de conexão
+     * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
     // Not tested
@@ -128,6 +141,6 @@ public class ChamoAPI {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+         return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 }
