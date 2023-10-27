@@ -24,13 +24,13 @@ public class ChamoAPI {
     }
 
     @Contract(pure = true)
-    private @NotNull String getUrlNomesLab() {
-        return getUrlAPI() + "labirintos";
+    private @NotNull String getNomeLabirinto() {
+        return "medium-maze";
     }
 
     @Contract(pure = true)
-    private @NotNull String getNomeLabirinto() {
-        return "very-large-maze";
+    private @NotNull String getUrlNomesLab() {
+        return getUrlAPI() + "labirintos";
     }
 
     @Contract(pure = true)
@@ -119,13 +119,10 @@ public class ChamoAPI {
     // Not tested
     @Contract(pure = true)
     final public @NotNull CaminhoValido fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
-        final Gson gson = new Gson();
-        final String json = "{\n" +
-                "\t\"id\" :" + "\"" + getID() + "\"" + "\n" +
-                "\t\"labirinto\" :" + "\"" + getNomeLabirinto() + "\"" + "\n" +
-                "\t\" \"todos_movimentos: " + gson.toJson(caminho) + "\n" +
-                "}";
+        validaCaminho validaCaminho = new validaCaminho(getID(), getNomeLabirinto(), caminho);
 
+        final Gson gson = new Gson();
+        final String json = gson.toJson(validaCaminho);
 
         final String retorno = sendRequest(URI.create(getUrlValidador()), json);
 
@@ -141,6 +138,6 @@ public class ChamoAPI {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-         return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 }

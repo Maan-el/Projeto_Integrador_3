@@ -21,7 +21,7 @@ public class Grafo {
         return inicio;
     }
 
-    public final void putGrafo(@NotNull final Node No) {
+    public final void putNode(@NotNull final Node No) {
         this.vizinhos.put(No.posAtual(),No.vizinhos());
 
         if (No.fim()) saidas.add(No.posAtual());

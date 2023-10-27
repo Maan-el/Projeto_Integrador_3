@@ -1,18 +1,17 @@
 import com.google.gson.Gson;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 public class DFS {
-    //    Stack<Integer> stack;
     Grafo grafo;
     Gson gson;
     ChamoAPI API;
     HashSet<Integer> visitados;
 
     public DFS() {
-//        stack = new Stack<>();
         visitados = new HashSet<>();
         gson = new Gson();
         API = new ChamoAPI();
@@ -33,24 +32,28 @@ public class DFS {
     //  tenha vizinhos restantes ele não entrará no loop,
     //  apenas retornará, sem mover de volta a posição
     //  original, causando um movimento inválido.
-    private void dfs(final int raiz, final ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
+    //
+    // FIXED, acho
+    private void dfs(final int raiz, final @NotNull ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
         visitados.add(raiz);
-        if (vizinhos == null) {
-            return;
-        }
 
-        for (int item : vizinhos) {
+        Node node = null;
+        for (var item : vizinhos) {
             if (visitados.add(item)) {
                 String json = API.proxMovimento(item);
-                Node node = gson.fromJson(json, Node.class);
+                node = gson.fromJson(json, Node.class);
 
-                grafo.putGrafo(node);
+                grafo.putNode(node);
 
                 dfs(node.posAtual(), node.vizinhos());
+                //noinspection ResultOfMethodCallIgnored
                 API.proxMovimento(raiz);
             }
         }
-        System.out.println(grafo.getGrafo().size());
+
+        // Acho que arruma o problema no labirinto grande
+        if (node != null && node.posAtual() != raiz) //noinspection ResultOfMethodCallIgnored
+            API.proxMovimento(raiz);
     }
 }
 
