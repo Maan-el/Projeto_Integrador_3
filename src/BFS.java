@@ -24,7 +24,7 @@ public class BFS {
         this.visitados = new HashSet<>();
     }
 
-    public void addList(final int no) {
+    public void addList(final @NotNull Integer no) {
         grafo.getVizinhosNo(no)
                 .ifPresent((xs) -> {
                     xs.stream() // Stream é uma função que recebe uma estrutura de dados e retorna um iterador sobre essa função

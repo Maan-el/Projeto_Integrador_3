@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class ChamoAPI {
+    private final Gson gson;
     private final HttpClient client = HttpClient.newHttpClient();
 
     @Contract(pure = true)
@@ -25,7 +26,7 @@ public class ChamoAPI {
 
     @Contract(pure = true)
     private @NotNull String getNomeLabirinto() {
-        return "medium-maze";
+        return "maze-sample";
     }
 
     @Contract(pure = true)
@@ -50,6 +51,7 @@ public class ChamoAPI {
 
     @Contract(pure = true)
     public ChamoAPI() {
+        gson = new Gson();
     }
 
     /**
@@ -85,10 +87,8 @@ public class ChamoAPI {
 
     @Contract(pure = true)
     private @NotNull String __inicio() throws IOException, InterruptedException {
-        final String json = "{\n" +
-                "\t\"id\": \"" + getID() + "\",\n" +
-                "\t\"labirinto\": \"" + getNomeLabirinto() + "\"\n" +
-                "}";
+        Inicio inicio = new Inicio(getID(), getNomeLabirinto());
+        final String json = gson.toJson(inicio);
 
         return sendRequest(URI.create(getUrlInicio()), json);
     }
@@ -101,11 +101,8 @@ public class ChamoAPI {
      */
     @Contract(pure = true)
     final public @NotNull String proxMovimento(final int No) throws IOException, InterruptedException {
-        final String json = "{\n" +
-                "\t\"id\" :" + "\"" + getID() + "\",\n" +
-                "\t\"labirinto\": " + "\"" + getNomeLabirinto() + "\",\n" +
-                "\t\"nova_posicao\": " + No + "\n" +
-                "}";
+        Movimento movimento = new Movimento(getID(), getNomeLabirinto(), No);
+        final String json = gson.toJson(movimento);
 
         return sendRequest(URI.create(getUrlMovimento()), json);
     }
@@ -119,9 +116,8 @@ public class ChamoAPI {
     // Not tested
     @Contract(pure = true)
     final public @NotNull CaminhoValido fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
-        validaCaminho validaCaminho = new validaCaminho(getID(), getNomeLabirinto(), caminho);
+        ValidaCaminho validaCaminho = new ValidaCaminho(getID(), getNomeLabirinto(), caminho);
 
-        final Gson gson = new Gson();
         final String json = gson.toJson(validaCaminho);
 
         final String retorno = sendRequest(URI.create(getUrlValidador()), json);

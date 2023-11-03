@@ -7,9 +7,9 @@ import java.util.HashSet;
 
 public class DFS {
     Grafo grafo;
-    Gson gson;
-    ChamoAPI API;
-    HashSet<Integer> visitados;
+    @NotNull final Gson gson;
+    @NotNull final ChamoAPI API;
+    @NotNull HashSet<Integer> visitados;
 
     public DFS() {
         visitados = new HashSet<>();
@@ -31,17 +31,16 @@ public class DFS {
     // TODO: Existe um corner case em que, caso um nó não
     //  tenha vizinhos restantes ele não entrará no loop,
     //  apenas retornará, sem mover de volta a posição
-    //  original, causando um movimento inválido.
+    //  original, causando um Movimento inválido.
     //
     // FIXED, acho
     private void dfs(final int raiz, final @NotNull ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
         visitados.add(raiz);
 
-        Node node = null;
         for (var item : vizinhos) {
             if (visitados.add(item)) {
                 String json = API.proxMovimento(item);
-                node = gson.fromJson(json, Node.class);
+                Node node = gson.fromJson(json, Node.class);
 
                 grafo.putNode(node);
 
@@ -51,9 +50,6 @@ public class DFS {
             }
         }
 
-        // Acho que arruma o problema no labirinto grande
-        if (node != null && node.posAtual() != raiz) //noinspection ResultOfMethodCallIgnored
-            API.proxMovimento(raiz);
     }
 }
 
