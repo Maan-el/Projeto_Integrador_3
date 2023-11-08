@@ -1,3 +1,4 @@
+import comunicacao.*;
 import com.google.gson.Gson;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -8,50 +9,25 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class ChamoAPI {
-    private final Gson gson;
+    private final Gson gson = new Gson();
     private final HttpClient client = HttpClient.newHttpClient();
 
-    @Contract(pure = true)
-    private @NotNull String getUrlAPI() {
-        return "https://gtm.delary.dev/";
-    }
+    private final URI movimento = URI.create("https://gtm.delary.dev/movimentar");
+    private final URI inicio = URI.create("https://gtm.delary.dev/iniciar");
+    private final URI validar = URI.create("https://gtm.delary.dev/validar");
+    private final URI nomeLabirintos = URI.create("https://gtm.delary.dev/labirintos");
+    private final @NotNull String nomeGrupo = "Um_Grupo";
 
-    @Contract(pure = true)
-    private @NotNull String getID() {
-        return "Um_Grupo";
-    }
+    private final @NotNull String nomeLabirinto;
 
-    @Contract(pure = true)
-    private @NotNull String getNomeLabirinto() {
-        return "maze-sample";
-    }
-
-    @Contract(pure = true)
-    private @NotNull String getUrlNomesLab() {
-        return getUrlAPI() + "labirintos";
-    }
-
-    @Contract(pure = true)
-    private @NotNull String getUrlValidador() {
-        return getUrlAPI() + "validar";
-    }
-
-    @Contract(pure = true)
-    private @NotNull String getUrlMovimento() {
-        return getUrlAPI() + "movimentar";
-    }
-
-    @Contract(pure = true)
-    private @NotNull String getUrlInicio() {
-        return getUrlAPI() + "iniciar";
-    }
-
+    /**
+     * Constructor
+     */
     @Contract(pure = true)
     public ChamoAPI() {
-        gson = new Gson();
+        this.nomeLabirinto = "maze-sample";
     }
 
     /**
@@ -64,7 +40,7 @@ public class ChamoAPI {
         final var request = HttpRequest
                 .newBuilder()
                 .GET()
-                .uri(URI.create(getUrlNomesLab()))
+                .uri(nomeLabirintos)
                 .build();
 
         final var response = client
@@ -73,24 +49,15 @@ public class ChamoAPI {
         return response.body();
     }
 
-    final public Optional<String> inicio() {
-        String saida;
-
-        try {
-            saida = __inicio();
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-
-        return Optional.of(saida);
+    final public Node toNode(@NotNull final String json) {
+        return gson.fromJson(json, Node.class);
     }
 
-    @Contract(pure = true)
-    private @NotNull String __inicio() throws IOException, InterruptedException {
-        Inicio inicio = new Inicio(getID(), getNomeLabirinto());
+    final public String inicio() throws IOException, InterruptedException {
+        Inicio inicio = new Inicio(nomeGrupo, nomeLabirinto);
         final String json = gson.toJson(inicio);
 
-        return sendRequest(URI.create(getUrlInicio()), json);
+        return sendRequest(this.inicio, json);
     }
 
     /**
@@ -100,11 +67,11 @@ public class ChamoAPI {
      * @throws InterruptedException ^C (Processo cancelado)
      */
     @Contract(pure = true)
-    final public @NotNull String proxMovimento(final int No) throws IOException, InterruptedException {
-        Movimento movimento = new Movimento(getID(), getNomeLabirinto(), No);
+    final public String proxMovimento(final int No) throws IOException, InterruptedException {
+        Movimento movimento = new Movimento(this.nomeGrupo, this.nomeLabirinto, No);
         final String json = gson.toJson(movimento);
 
-        return sendRequest(URI.create(getUrlMovimento()), json);
+        return sendRequest(this.movimento, json);
     }
 
     /**
@@ -116,15 +83,23 @@ public class ChamoAPI {
     // Not tested
     @Contract(pure = true)
     final public @NotNull CaminhoValido fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
-        ValidaCaminho validaCaminho = new ValidaCaminho(getID(), getNomeLabirinto(), caminho);
+        ValidaCaminho validaCaminho = new ValidaCaminho(this.nomeGrupo, this.nomeLabirinto, caminho);
 
         final String json = gson.toJson(validaCaminho);
 
-        final String retorno = sendRequest(URI.create(getUrlValidador()), json);
+        final String retorno = sendRequest(this.validar, json);
 
         return gson.fromJson(retorno, CaminhoValido.class);
     }
 
+    /**
+     * @param uri
+     * @param json
+     * @return Caso a conexão retorne um código de erro, todo o programa irá parar.
+     * Caso o processo retorne normalmente, será retornado o json gerado pela conexão.
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Contract(pure = true)
     private String sendRequest(final URI uri, final String json) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
@@ -134,6 +109,22 @@ public class ChamoAPI {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
+        validaRetorno(request);
+
         return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+    }
+
+
+    /**
+     * @param request
+     * @throws IOException
+     * @throws InterruptedException Verifica que a conexão retorna algo válido, senão, para de executar o programa.
+     */
+    private void validaRetorno(HttpRequest request) throws IOException, InterruptedException {
+        if (client.send(request, HttpResponse.BodyHandlers.ofString()).statusCode() == 422) {
+            System.err.println("Comunicação.Movimento inválido");
+            System.err.println("Parando execução");
+            System.exit(-1);
+        }
     }
 }
