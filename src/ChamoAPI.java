@@ -13,13 +13,11 @@ import java.util.ArrayList;
 public class ChamoAPI {
     private final Gson gson = new Gson();
     private final HttpClient client = HttpClient.newHttpClient();
-
     private final URI movimento = URI.create("https://gtm.delary.dev/movimentar");
     private final URI inicio = URI.create("https://gtm.delary.dev/iniciar");
     private final URI validar = URI.create("https://gtm.delary.dev/validar");
     private final URI nomeLabirintos = URI.create("https://gtm.delary.dev/labirintos");
     private final @NotNull String nomeGrupo = "Um_Grupo";
-
     private final @NotNull String nomeLabirinto;
 
     /**
