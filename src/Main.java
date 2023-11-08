@@ -2,8 +2,6 @@
 // pois elas possuiam apenas getters e todos os seus valores eram constantes,
 // por isso Record declara intenção melhor que Class.
 
-import com.google.gson.Gson;
-
 import java.io.IOException;
 
 public class Main {
@@ -15,7 +13,7 @@ public class Main {
 
         //HACK ambos métodos lançam as mesmas exceções e mostram as mesmas mensagens de erro.
         try {
-            System.out.println(api.getNomes());
+//            System.out.println(api.getNomes());
             grafo = dfs.inicio();
         } catch (IOException e) {
             System.err.println("Erro de conexão com a internet, verifique sua conexão");
