@@ -1,3 +1,4 @@
+import comunicacao.Node;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +14,7 @@ public class Grafo {
     public Grafo(@NotNull final Node No) {
         this.vizinhos = new HashMap<>();
         this.vizinhos.put(No.posAtual(), No.vizinhos());
-        this.inicio = No.inicio() ? No.posAtual() : -1;
+        this.inicio = No.posAtual();
         this.saidas = new HashSet<>();
     }
 
