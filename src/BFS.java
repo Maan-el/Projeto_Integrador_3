@@ -10,7 +10,7 @@ public class BFS {
     // Essa fila irá conter os próximos valores a serem visitados no grafo.
     private final @NotNull ArrayDeque<Integer> fila;
 
-    //    private final @NotNull HashSet<Integer> saidas;
+    //    Private final @NotNull HashSet<Integer> saidas;
     // Um set é uma estrutura de dados que mantem uma cópia de todos os valores inseridos nele.
     // Exemplo, digamos que eu insiro os numéro 3, 7, 6, caso tente inserir qualquer um desses
     // números novamente a estrutura verá que esse valor já existe e não irá inserí-lo,
