@@ -6,24 +6,23 @@ import java.util.*;
 
 public class Grafo {
     private final @NotNull Set<@NotNull Integer> saidas;
-    private final int inicio;
     // O HashMap é um par de chaves(K) e valores(V).
     // K representa um vértice do grafo e V representa seus vizinhos.
     private final @NotNull HashMap<@NotNull Integer, @NotNull ArrayList<Integer>> vizinhos;
 
-    public Grafo(@NotNull final Node No) {
-        this.vizinhos = new HashMap<>();
-        this.vizinhos.put(No.posAtual(), No.vizinhos());
-        this.inicio = No.posAtual();
-        this.saidas = new HashSet<>();
+    {
+        saidas = new HashSet<>();
+        vizinhos = new HashMap<>();
     }
 
-    final public int getInicio() {
-        return inicio;
+    /**
+     * Constructor
+     */
+    public Grafo() {
     }
 
     public final void putNode(@NotNull final Node No) {
-        this.vizinhos.put(No.posAtual(),No.vizinhos());
+        this.vizinhos.put(No.posAtual(), No.vizinhos());
 
         if (No.fim()) saidas.add(No.posAtual());
     }
