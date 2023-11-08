@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class ChamoAPI {
     private final Gson gson = new Gson();
     private final HttpClient client = HttpClient.newHttpClient();
-    private final URI movimento = URI.create("https://gtm.delary.dev/movimentar");
+    private final URI movimentoUri = URI.create("https://gtm.delary.dev/movimentar");
     private final URI inicioUri = URI.create("https://gtm.delary.dev/iniciar");
     private final URI validarUri = URI.create("https://gtm.delary.dev/validar");
     private final URI nomesLabirintosUri = URI.create("https://gtm.delary.dev/labirintos");
@@ -64,7 +64,7 @@ public class ChamoAPI {
     final public Node proxMovimento(final int No) throws IOException, InterruptedException {
         final String mensagem =
                 gson.toJson(new Movimento(this.nomeGrupo, this.nomeLabirinto, No));
-        final String resposta = sendRequest(this.movimento, mensagem);
+        final String resposta = sendRequest(this.movimentoUri, mensagem);
 
         return toNode(resposta);
     }
