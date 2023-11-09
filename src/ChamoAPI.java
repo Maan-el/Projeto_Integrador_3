@@ -33,7 +33,7 @@ public class ChamoAPI {
      */
     @Contract(pure = true)
     public ChamoAPI() {
-        this.nomeLabirinto = "very-large-maze";
+        this.nomeLabirinto = "maze-sample";
     }
 
     /**
