@@ -70,8 +70,7 @@ public class ChamoAPI {
      */
     @Contract(pure = true)
     final public Node proxMovimento(final int No) throws IOException, InterruptedException {
-        final String mensagem =
-                gson.toJson(new Movimento(this.nomeGrupo, this.nomeLabirinto, No));
+        final String mensagem = gson.toJson(new Movimento(this.nomeGrupo, this.nomeLabirinto, No));
         final String resposta = sendRequest(this.movimentoUri, mensagem);
 
         return toNode(resposta);
@@ -84,15 +83,14 @@ public class ChamoAPI {
     /**
      * @param caminho Lista com os passos para ir do início a saída do grafo
      * @return Classe com a resposta da API dizendo se o caminho é válido e a quantidade de movimentos
-     * @throws IOException          Erro de conexão
+     * @throws IOException Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
     // Not tested
     @Contract(pure = true)
-    final public @NotNull CaminhoValidado fim(final ArrayList<Integer> caminho)
-            throws IOException, InterruptedException {
-        CaminhoParaValidar validaCaminho =
-                new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
+    @NotNull
+    final public CaminhoValidado fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
+        CaminhoParaValidar validaCaminho = new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
 
         final String mensagem = gson.toJson(validaCaminho);
 
@@ -106,16 +104,14 @@ public class ChamoAPI {
      * @param json Mensagem que será enviada.
      * @return Caso a conexão retorne um código de erro, todo o programa irá parar.
      * Caso o processo retorne normalmente, será retornado o json gerado pela conexão.
-     * @throws IOException          Problemas com a conexão
+     * @throws IOException Problemas com a conexão
      * @throws InterruptedException Processo foi interrompido durante a conexão
      */
     @Contract(pure = true)
-    private String sendRequest(@NotNull final URI uri, @NotNull final String json)
-            throws IOException, InterruptedException {
+    private String sendRequest(@NotNull final URI uri, @NotNull final String json) throws IOException, InterruptedException {
 
         final HttpRequest mensagem = getHttpPostRequest(uri, json);
-        final HttpResponse<String> resposta =
-                client.send(mensagem, HttpResponse.BodyHandlers.ofString());
+        final HttpResponse<String> resposta = client.send(mensagem, HttpResponse.BodyHandlers.ofString());
 
         validaRetorno(resposta);
 
