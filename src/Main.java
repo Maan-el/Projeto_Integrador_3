@@ -12,9 +12,8 @@ public class Main {
         ChamoAPI api = new ChamoAPI();
         ArrayList<Integer> movimentos = null;
 
-        //HACK ambos métodos lançam as mesmas exceções e mostram as mesmas mensagens de erro.
         try {
-//            System.out.println(api.getNomes());
+            System.out.println(api.getNomes());
             movimentos = dfs.inicio();
         } catch (IOException e) {
             System.err.println("Erro de conexão com a internet, verifique sua conexão");
