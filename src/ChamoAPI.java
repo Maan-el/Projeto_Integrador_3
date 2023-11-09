@@ -90,6 +90,8 @@ public class ChamoAPI {
     @Contract(pure = true)
     @NotNull
     final public CaminhoValidado fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
+        inicio();
+
         CaminhoParaValidar validaCaminho = new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
 
         final String mensagem = gson.toJson(validaCaminho);
