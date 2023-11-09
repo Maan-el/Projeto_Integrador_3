@@ -1,10 +1,11 @@
-import com.google.gson.Gson;
 import comunicacao.Node;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 
 public class DFS {
     @NotNull
@@ -33,14 +34,17 @@ public class DFS {
             if (visitados.add(item)) {
                 Node node = API.proxMovimento(item);
 
-                grafo.putNode(node);
+                if (node.fim()) return Optional.of(new ArrayList<>(node.posAtual()));
 
-                dfs(node.posAtual(), node.vizinhos());
+                retorno = dfs(node.posAtual(), node.vizinhos());
+
+                if (retorno.isPresent()) break;
                 //noinspection ResultOfMethodCallIgnored
                 API.proxMovimento(raiz);
             }
         }
-
+        retorno.ifPresent((xs) -> xs.add(raiz));
+        return retorno;
     }
 
 }
