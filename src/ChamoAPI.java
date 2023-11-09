@@ -88,10 +88,16 @@ public class ChamoAPI {
      */
     // Not tested
     @Contract(pure = true)
-    @NotNull
-    final public CaminhoValidado fim(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
-        inicio();
+    final public boolean fim(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
+        if (getCaminhoValidado(caminho).caminho_valido()) {
+            caminhaParaSaida(caminho);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    private CaminhoValidado getCaminhoValidado(@NotNull ArrayList<Integer> caminho) throws IOException, InterruptedException {
         CaminhoParaValidar validaCaminho = new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
 
         final String mensagem = gson.toJson(validaCaminho);
@@ -99,6 +105,14 @@ public class ChamoAPI {
         final String resposta = sendRequest(this.validarUri, mensagem);
 
         return gson.fromJson(resposta, CaminhoValidado.class);
+    }
+
+
+    private void caminhaParaSaida(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
+        inicio();
+
+        for (Integer movimento : caminho) proxMovimento(movimento);
+
     }
 
     /**
