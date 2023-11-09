@@ -1,4 +1,3 @@
-public class Grafo {
 import comunicacao.Node;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,4 +9,7 @@ public record Grafo(@NotNull Integer inicio,
                     @NotNull HashSet<Integer> saidas,
                     @NotNull HashMap<@NotNull Integer, @NotNull ArrayList<@NotNull Integer>> listaAdjacencia) {
     public void add(@NotNull final Node node) {
+        listaAdjacencia.putIfAbsent(node.posAtual(), node.vizinhos());
+        if (node.fim()) saidas.add(node.posAtual());
+    }
 }
