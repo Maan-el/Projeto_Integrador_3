@@ -83,7 +83,7 @@ public class ChamoAPI {
     /**
      * @param caminho Lista com os passos para ir do início a saída do grafo
      * @return Classe com a resposta da API dizendo se o caminho é válido e a quantidade de movimentos
-     * @throws IOException Erro de conexão
+     * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
     // Not tested
@@ -106,7 +106,7 @@ public class ChamoAPI {
      * @param json Mensagem que será enviada.
      * @return Caso a conexão retorne um código de erro, todo o programa irá parar.
      * Caso o processo retorne normalmente, será retornado o json gerado pela conexão.
-     * @throws IOException Problemas com a conexão
+     * @throws IOException          Problemas com a conexão
      * @throws InterruptedException Processo foi interrompido durante a conexão
      */
     @Contract(pure = true)
