@@ -10,14 +10,14 @@ public class DFS {
     @NotNull
     final HashSet<Integer> visitados;
 
-    Grafo grafo;
+    private Grafo grafo;
 
     public DFS() {
         visitados = new HashSet<>();
         API = new ChamoAPI();
     }
 
-    final public ArrayList<Integer> inicio() throws IOException, InterruptedException {
+    final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
         Node node = API.inicio();
 
         grafo = new Grafo(node.posAtual(), new HashSet<>(), new HashMap<>());
@@ -47,6 +47,8 @@ public class DFS {
     private Optional<ArrayList<Integer>> getIntegers(@NotNull Integer raiz, @NotNull Integer item) throws IOException, InterruptedException {
         if (visitados.add(item)) {
             Node node = API.proxMovimento(item);
+
+            grafo.add(node);
 
             if (node.fim()) return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
 
