@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class Grafo {
-    private final @NotNull Set<@NotNull Integer> saidas;
+    @NotNull private final Set<@NotNull Integer> saidas;
     // O HashMap é um par de chaves(K) e valores(V).
     // K representa um vértice do grafo e V representa seus vizinhos.
-    private final @NotNull HashMap<@NotNull Integer, @NotNull ArrayList<Integer>> vizinhos;
+    @NotNull private final HashMap<@NotNull Integer, @NotNull ArrayList<Integer>> vizinhos;
 
     {
         saidas = new HashSet<>();

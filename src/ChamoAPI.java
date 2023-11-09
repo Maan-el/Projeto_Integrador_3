@@ -11,14 +11,22 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 
 public class ChamoAPI {
+    @NotNull
     private final Gson gson = new Gson();
+    @NotNull
     private final HttpClient client = HttpClient.newHttpClient();
+    @NotNull
     private final URI movimentoUri = URI.create("https://gtm.delary.dev/movimentar");
+    @NotNull
     private final URI inicioUri = URI.create("https://gtm.delary.dev/iniciar");
+    @NotNull
     private final URI validarUri = URI.create("https://gtm.delary.dev/validar");
+    @NotNull
     private final URI nomesLabirintosUri = URI.create("https://gtm.delary.dev/labirintos");
-    private final @NotNull String nomeGrupo = "Um_Grupo";
-    private final @NotNull String nomeLabirinto;
+    @NotNull
+    private final String nomeGrupo = "Um_Grupo";
+    @NotNull
+    private final String nomeLabirinto;
 
     /**
      * Constructor
@@ -102,7 +110,7 @@ public class ChamoAPI {
      * @throws InterruptedException Processo foi interrompido durante a conexão
      */
     @Contract(pure = true)
-    private String sendRequest(final @NotNull URI uri, final @NotNull String json)
+    private String sendRequest(@NotNull final URI uri, @NotNull final String json)
             throws IOException, InterruptedException {
 
         final HttpRequest mensagem = getHttpPostRequest(uri, json);
@@ -114,7 +122,7 @@ public class ChamoAPI {
         return resposta.body();
     }
 
-    private HttpRequest getHttpPostRequest(@NotNull URI uri, @NotNull String json) {
+    private HttpRequest getHttpPostRequest(@NotNull final URI uri, @NotNull final String json) {
         return HttpRequest
                 .newBuilder()
                 .uri(uri)
@@ -129,8 +137,8 @@ public class ChamoAPI {
      *
      * @param resposta Comunicação com a API que precisa ser validada
      */
-    private <T> void validaRetorno(final @NotNull HttpResponse<T> resposta) {
-        /**
+    private <T> void validaRetorno(@NotNull final HttpResponse<T> resposta) {
+        /*
          * A API, no momento, possui apenas dois códigos de resposta, 200 e 422.
          * O erro é gerado caso haja um erro de formatação no json _ou_ um movimento inválido ocorre.
          * Para facilitar o processo de debug, caso ocorra um erro, o programa irá crashar instantaneamente.

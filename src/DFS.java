@@ -29,8 +29,8 @@ public class DFS {
         return this.grafo;
     }
 
-    private void dfs(final @NotNull Integer raiz,
-                     final @NotNull ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
+    private void dfs(@NotNull final Integer raiz,
+                     @NotNull final ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
 
         visitados.add(raiz);
 
