@@ -20,17 +20,11 @@ public class Main {
 
         System.out.println(movimentos);
 
-        CaminhoValidado caminhoValidado = null;
-
         try {
-            caminhoValidado = api.fim(movimentos);
+            api.fim(movimentos);
         } catch (IOException | InterruptedException e) {
             System.err.println(e.getMessage());
         }
 
-        assert caminhoValidado != null;
-
-        System.out.println(caminhoValidado.caminho_valido());
-        System.out.println(caminhoValidado.quantidade_movimentos());
     }
 }
