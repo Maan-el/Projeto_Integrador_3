@@ -24,5 +24,10 @@ public class Main {
             System.err.println(e.getMessage());
         }
 
+        System.out.println(
+                dfs
+                .getGrafo()
+                .listaAdjacencia()
+                .entrySet());
     }
 }
