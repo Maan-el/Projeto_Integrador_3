@@ -1,3 +1,5 @@
+import comunicacao.CaminhoValidado;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -11,16 +13,24 @@ public class Main {
         try {
             System.out.println(api.getNomes());
             movimentos = dfs.inicio();
-        } catch (IOException e) {
-            System.err.println("Erro de conexão com a internet, verifique sua conexão");
-            System.exit(e.hashCode());
-        } catch (InterruptedException e) {
-            System.err.println("Processo interrompido");
+        } catch (IOException | InterruptedException e) {
+            System.err.println(e.getMessage());
             System.exit(e.hashCode());
         }
 
         System.out.println(movimentos);
 
-        System.out.println(movimentos);
+        CaminhoValidado caminhoValidado = null;
+
+        try {
+            caminhoValidado = api.fim(movimentos);
+        } catch (IOException | InterruptedException e) {
+            System.err.println(e.getMessage());
+        }
+
+        assert caminhoValidado != null;
+
+        System.out.println(caminhoValidado.caminho_valido());
+        System.out.println(caminhoValidado.quantidade_movimentos());
     }
 }
