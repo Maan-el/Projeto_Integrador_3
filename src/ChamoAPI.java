@@ -82,19 +82,15 @@ public class ChamoAPI {
 
     /**
      * @param caminho Lista com os passos para ir do início a saída do grafo
-     * @return Classe com a resposta da API dizendo se o caminho é válido e a quantidade de movimentos
      * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
     // Not tested
     @Contract(pure = true)
-    final public boolean fim(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
+    final public void fim(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         if (getCaminhoValidado(caminho).caminho_valido()) {
             caminhaParaSaida(caminho);
-            return true;
-        } else {
-            return false;
-        }
+        } 
     }
 
     private CaminhoValidado getCaminhoValidado(@NotNull ArrayList<Integer> caminho) throws IOException, InterruptedException {

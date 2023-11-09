@@ -1,6 +1,5 @@
 import comunicacao.Node;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ public class DFS {
 
     private Optional<ArrayList<Integer>> dfs(@NotNull final Integer raiz,
                                              @NotNull final ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
-        Optional<ArrayList<Integer>> retorno = Optional.empty();
 
         for (var item : vizinhos) {
             if (visitados.add(item)) {
@@ -43,13 +41,12 @@ public class DFS {
 
                 if (node.fim()) return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
 
-                retorno = dfs(node.posAtual(), node.vizinhos());
+                Optional<ArrayList<Integer>> retorno = dfs(node.posAtual(), node.vizinhos());
 
                 if (retorno.isPresent()) {
                     retorno.get().add(raiz);
                     return retorno;
                 }
-                ;
                 //noinspection ResultOfMethodCallIgnored
                 API.proxMovimento(raiz);
             }
