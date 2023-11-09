@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 public class DFS {
@@ -18,12 +19,18 @@ public class DFS {
         API = new ChamoAPI();
     }
 
-    @Nullable
     final public ArrayList<Integer> inicio() throws IOException, InterruptedException {
         Node node = API.inicio();
 
         visitados.add(node.posAtual());
-        return dfs(node.posAtual(), node.vizinhos()).orElse(null);
+        final var caminhoReverso = dfs(node.posAtual(), node.vizinhos()).orElse(null);
+
+        assert caminhoReverso != null;
+        final var caminho = new ArrayList<>(caminhoReverso.reversed());
+
+        caminho.remove(0);
+
+        return caminho;
     }
 
     private Optional<ArrayList<Integer>> dfs(@NotNull final Integer raiz,
@@ -34,17 +41,20 @@ public class DFS {
             if (visitados.add(item)) {
                 Node node = API.proxMovimento(item);
 
-                if (node.fim()) return Optional.of(new ArrayList<>(node.posAtual()));
+                if (node.fim()) return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
 
                 retorno = dfs(node.posAtual(), node.vizinhos());
 
-                if (retorno.isPresent()) break;
+                if (retorno.isPresent()) {
+                    retorno.get().add(raiz);
+                    return retorno;
+                }
+                ;
                 //noinspection ResultOfMethodCallIgnored
                 API.proxMovimento(raiz);
             }
         }
-        retorno.ifPresent((xs) -> xs.add(raiz));
-        return retorno;
+        return Optional.empty();
     }
 
 }
