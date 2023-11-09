@@ -3,18 +3,19 @@
 // por isso Record declara intenção melhor que Class.
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
         DFS dfs = new DFS();
 
         ChamoAPI api = new ChamoAPI();
-        Grafo grafo = null;
+        ArrayList<Integer> movimentos = null;
 
         //HACK ambos métodos lançam as mesmas exceções e mostram as mesmas mensagens de erro.
         try {
 //            System.out.println(api.getNomes());
-            grafo = dfs.inicio();
+            movimentos = dfs.inicio();
         } catch (IOException e) {
             System.err.println("Erro de conexão com a internet, verifique sua conexão");
             System.exit(e.hashCode());
@@ -23,8 +24,8 @@ public class Main {
             System.exit(e.hashCode());
         }
 
-        System.out.println(grafo.getGrafo().entrySet());
+        System.out.println(movimentos);
 
-        System.out.println(grafo.getSaidas());
+        System.out.println(movimentos);
     }
 }

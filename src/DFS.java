@@ -11,28 +11,23 @@ public class DFS {
     final ChamoAPI API;
     @NotNull
     final HashSet<Integer> visitados;
-    @NotNull
-    final Grafo grafo;
 
     public DFS() {
         visitados = new HashSet<>();
         API = new ChamoAPI();
-        grafo = new Grafo();
     }
 
-    final public Grafo inicio() throws IOException, InterruptedException {
+    @Nullable
+    final public ArrayList<Integer> inicio() throws IOException, InterruptedException {
         Node node = API.inicio();
 
-        grafo.putNode(node);
-        dfs(node.posAtual(), node.vizinhos());
-
-        return this.grafo;
+        visitados.add(node.posAtual());
+        return dfs(node.posAtual(), node.vizinhos()).orElse(null);
     }
 
-    private void dfs(@NotNull final Integer raiz,
-                     @NotNull final ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
-
-        visitados.add(raiz);
+    private Optional<ArrayList<Integer>> dfs(@NotNull final Integer raiz,
+                                             @NotNull final ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
+        Optional<ArrayList<Integer>> retorno = Optional.empty();
 
         for (var item : vizinhos) {
             if (visitados.add(item)) {
