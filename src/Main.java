@@ -1,7 +1,3 @@
-// Todas as classes que estão sendo usadas somente para pegar valores de uma API foram substituidas por Records,
-// pois elas possuiam apenas getters e todos os seus valores eram constantes,
-// por isso Record declara intenção melhor que Class.
-
 import java.io.IOException;
 import java.util.ArrayList;
 
