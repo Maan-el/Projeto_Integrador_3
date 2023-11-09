@@ -1,5 +1,5 @@
-import comunicacao.*;
 import com.google.gson.Gson;
+import comunicacao.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class ChamoAPI {
      */
     @Contract(pure = true)
     public ChamoAPI() {
-        this.nomeLabirinto = "maze-sample";
+        this.nomeLabirinto = "very-large-maze";
     }
 
     /**
@@ -51,7 +51,11 @@ public class ChamoAPI {
     }
 
     private HttpRequest getHttpGetRequest() {
-        return HttpRequest.newBuilder().GET().uri(nomesLabirintosUri).build();
+        return HttpRequest
+                .newBuilder()
+                .GET()
+                .uri(nomesLabirintosUri)
+                .build();
     }
 
     final public Node inicio() throws IOException, InterruptedException {
@@ -90,9 +94,12 @@ public class ChamoAPI {
     final public void fim(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         if (getCaminhoValidado(caminho).caminho_valido()) {
             caminhaParaSaida(caminho);
+        } else {
+            caminhaParaSaida(caminho);
         }
     }
 
+    @NotNull
     private CaminhoValidado getCaminhoValidado(@NotNull ArrayList<Integer> caminho) throws IOException, InterruptedException {
         CaminhoParaValidar validaCaminho = new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
 
@@ -103,12 +110,10 @@ public class ChamoAPI {
         return gson.fromJson(resposta, CaminhoValidado.class);
     }
 
-
     private void caminhaParaSaida(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         inicio();
 
         for (Integer movimento : caminho) proxMovimento(movimento);
-
     }
 
     /**
@@ -130,6 +135,7 @@ public class ChamoAPI {
         return resposta.body();
     }
 
+    @NotNull
     private HttpRequest getHttpPostRequest(@NotNull final URI uri, @NotNull final String json) {
         return HttpRequest
                 .newBuilder()
