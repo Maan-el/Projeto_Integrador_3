@@ -90,7 +90,7 @@ public class ChamoAPI {
     final public void fim(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         if (getCaminhoValidado(caminho).caminho_valido()) {
             caminhaParaSaida(caminho);
-        } 
+        }
     }
 
     private CaminhoValidado getCaminhoValidado(@NotNull ArrayList<Integer> caminho) throws IOException, InterruptedException {
