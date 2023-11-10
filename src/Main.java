@@ -19,7 +19,7 @@ public class Main {
         System.out.println(movimentos);
 
         try {
-            api.fim(movimentos);
+            api.fim_debug(movimentos);
         } catch (IOException | InterruptedException e) {
             System.err.println(e.getMessage());
         }
