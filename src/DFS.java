@@ -34,6 +34,7 @@ public class DFS {
     }
 
     final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
+    final public ArrayList<Integer> inicio() throws IOException, InterruptedException {
         Node node = API.inicio();
 
         grafo = getNewGrafo(node);
