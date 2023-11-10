@@ -55,7 +55,7 @@ public class ChamoAPI {
     final public String getNomes() throws IOException, InterruptedException {
         final HttpRequest requisicao = getHttpGetRequest();
 
-        final HttpResponse<String> resposta = client.send(requisicao, HttpResponse.BodyHandlers.ofString());
+        final HttpResponse<String> resposta = client.send(requisicao, getBodyHandlerString());
 
         return resposta.body();
     }
@@ -138,7 +138,7 @@ public class ChamoAPI {
     private String sendRequest(@NotNull final URI uri, @NotNull final String json) throws IOException, InterruptedException {
 
         final HttpRequest mensagem = getHttpPostRequest(uri, json);
-        final HttpResponse<String> resposta = client.send(mensagem, HttpResponse.BodyHandlers.ofString());
+        final HttpResponse<String> resposta = client.send(mensagem, getBodyHandlerString());
 
         validaRetorno(resposta);
 
@@ -151,7 +151,7 @@ public class ChamoAPI {
                 .newBuilder()
                 .uri(uri)
                 .headers("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .POST(getBodyPublisherString(json))
                 .build();
     }
 
