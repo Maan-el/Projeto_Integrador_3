@@ -69,6 +69,7 @@ public class DFS {
         return Optional.empty();
     }
 
+    // TODO Arrumar um nome decente para essa função
     private Optional<ArrayList<Integer>> getIntegers(@NotNull Integer raiz, @NotNull Integer item) throws IOException, InterruptedException {
         if (foiVisitado(item)) {
             return Optional.empty();
