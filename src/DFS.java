@@ -1,4 +1,5 @@
 import comunicacao.Node;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -53,9 +54,8 @@ public class DFS {
     private Grafo getNewGrafo(@NotNull Node node) {
         Grafo grafo = new Grafo(node.posAtual(), new HashSet<>(), new HashMap<>());
         grafo.add(node);
-
-        visitados.add(node.posAtual());
-        final var caminhoReverso = dfs(node.posAtual(), node.vizinhos()).orElse(null);
+        return grafo;
+    }
 
     private boolean foiVisitado(@NotNull Integer node) {
         return !visitados.add(node);
@@ -78,25 +78,20 @@ public class DFS {
 
         Node node = API.proxMovimento(item);
 
-            grafo.add(node);
+        grafo.add(node);
 
-            if (node.fim()) return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
+        if (node.fim()) return finalDoCaminho(raiz, node);
 
-            Optional<ArrayList<Integer>> retorno = dfs(node.posAtual(), node.vizinhos());
+        var caminho = dfs(node.posAtual(), node.vizinhos());
 
-            if (retorno.isPresent()) {
-                retorno.get().add(raiz);
-                return retorno;
-            }
+        caminho.map((xs) -> xs.add(raiz));
 
-            //noinspection ResultOfMethodCallIgnored
+        //noinspection ResultOfMethodCallIgnored
+        if (caminho.isEmpty()) {
             API.proxMovimento(raiz);
         }
-        return Optional.empty();
-    }
 
-    public final Grafo getGrafo() {
-        return grafo;
+        return caminho;
     }
 }
 
