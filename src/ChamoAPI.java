@@ -99,9 +99,19 @@ public class ChamoAPI {
      * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
-    // Not tested
     @Contract(pure = true)
     final public void fim(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
+        caminhaParaSaida(caminho);
+    }
+
+    /**
+     * @param caminho Lista com os passos para ir do início a saída do grafo
+     * @throws IOException          Erro de conexão
+     * @throws InterruptedException ^C (Processo cancelado)
+     */
+    // Not tested
+    @Contract(pure = true)
+    final public void fim_debug(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         if (getCaminhoValidado(caminho).caminho_valido()) {
             caminhaParaSaida(caminho);
         } else {
