@@ -20,7 +20,7 @@ public class ChamoAPI {
     @NotNull
     private final URI inicioUri = URI.create("https://gtm.delary.dev/iniciar");
     @NotNull
-    private final URI validarUri = URI.create("https://gtm.delary.dev/validar");
+    private final URI validarUri = URI.create("https://gtm.delary.dev/validar_caminho");
     @NotNull
     private final URI nomesLabirintosUri = URI.create("https://gtm.delary.dev/labirintos");
     @NotNull
