@@ -123,6 +123,8 @@ public class ChamoAPI {
     private void caminhaParaSaida(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         inicio();
 
+        caminho.remove(0);
+
         for (Integer movimento : caminho) proxMovimento(movimento);
     }
 

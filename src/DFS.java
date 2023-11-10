@@ -20,9 +20,7 @@ public class DFS {
 
     @NotNull
     private ArrayList<Integer> fixCaminho(@NotNull ArrayList<Integer> caminhoReverso) {
-        final var caminho = new ArrayList<>(caminhoReverso.reversed());
-        caminho.remove(0);
-        return caminho;
+        return new ArrayList<>(caminhoReverso.reversed());
     }
 
     @Contract("_, _ -> new")
