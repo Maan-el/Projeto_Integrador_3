@@ -36,6 +36,16 @@ public class ChamoAPI {
         this.nomeLabirinto = "maze-sample";
     }
 
+    @NotNull
+    private static HttpResponse.BodyHandler<String> getBodyHandlerString() {
+        return HttpResponse.BodyHandlers.ofString();
+    }
+
+    @NotNull
+    private static HttpRequest.BodyPublisher getBodyPublisherString(@NotNull String json) {
+        return HttpRequest.BodyPublishers.ofString(json);
+    }
+
     /**
      * @return Retorna os nomes dos labirintos válidos
      * @throws IOException          Erro de conexão
