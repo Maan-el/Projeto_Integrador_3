@@ -57,12 +57,8 @@ public class DFS {
         visitados.add(node.posAtual());
         final var caminhoReverso = dfs(node.posAtual(), node.vizinhos()).orElse(null);
 
-        assert caminhoReverso != null;
-        final var caminho = new ArrayList<>(caminhoReverso.reversed());
-
-        caminho.remove(0);
-
-        return caminho;
+    private boolean foiVisitado(@NotNull Integer node) {
+        return !visitados.add(node);
     }
 
     private Optional<ArrayList<Integer>> dfs(@NotNull final Integer raiz,
@@ -76,8 +72,11 @@ public class DFS {
     }
 
     private Optional<ArrayList<Integer>> getIntegers(@NotNull Integer raiz, @NotNull Integer item) throws IOException, InterruptedException {
-        if (visitados.add(item)) {
-            Node node = API.proxMovimento(item);
+        if (foiVisitado(item)) {
+            return Optional.empty();
+        }
+
+        Node node = API.proxMovimento(item);
 
             grafo.add(node);
 
