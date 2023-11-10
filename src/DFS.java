@@ -80,7 +80,7 @@ public class DFS {
 
         grafo.add(node);
 
-        if (node.fim()) return finalDoCaminho(raiz, node);
+        if (node.fim()) return finalDoCaminho(node, raiz);
 
         var caminho = dfs(node.posAtual(), node.vizinhos());
 
