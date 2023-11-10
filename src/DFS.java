@@ -7,9 +7,9 @@ import java.util.*;
 
 public class DFS {
     @NotNull
-    final ChamoAPI API;
+    private final ChamoAPI API;
     @NotNull
-    final HashSet<Integer> visitados;
+    private final HashSet<Integer> visitados;
 
     private Grafo grafo;
 
@@ -19,7 +19,7 @@ public class DFS {
     }
 
     @NotNull
-    private static ArrayList<Integer> fixCaminho(@NotNull ArrayList<Integer> caminhoReverso) {
+    private ArrayList<Integer> fixCaminho(@NotNull ArrayList<Integer> caminhoReverso) {
         final var caminho = new ArrayList<>(caminhoReverso.reversed());
         caminho.remove(0);
         return caminho;
@@ -27,7 +27,7 @@ public class DFS {
 
     @Contract("_, _ -> new")
     @NotNull
-    private static Optional<ArrayList<Integer>> finalDoCaminho(@NotNull Integer raiz, @NotNull Node node) {
+    private Optional<ArrayList<Integer>> finalDoCaminho(@NotNull Node node, @NotNull Integer raiz) {
         return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
     }
 
