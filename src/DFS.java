@@ -13,27 +13,50 @@ public class DFS {
 
     private Grafo grafo;
 
+    /**
+     * Constructor
+     */
     public DFS() {
         visitados = new HashSet<>();
         API = new ChamoAPI();
     }
 
+    /**
+     * @param caminhoReverso
+     * @return
+     */
+    @Contract("_ -> new")
     @NotNull
     private ArrayList<Integer> fixCaminho(@NotNull ArrayList<Integer> caminhoReverso) {
         return new ArrayList<>(caminhoReverso.reversed());
     }
 
+    /**
+     * @param node
+     * @param raiz
+     * @return
+     */
     @Contract("_, _ -> new")
     @NotNull
     private Optional<ArrayList<Integer>> finalDoCaminho(@NotNull Node node, @NotNull Integer raiz) {
         return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
     }
 
+    /**
+     * @return
+     */
+    @Contract(pure = true)
+    @NotNull
     public final Grafo getGrafo() {
         return grafo;
     }
 
-    final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
+    /**
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    @NotNull
     final public ArrayList<Integer> inicio() throws IOException, InterruptedException {
         Node node = API.inicio();
 
@@ -56,10 +79,21 @@ public class DFS {
         return grafo;
     }
 
+    /**
+     * @param node
+     * @return
+     */
     private boolean foiVisitado(@NotNull Integer node) {
         return !visitados.add(node);
     }
 
+    /**
+     * @param raiz
+     * @param vizinhos
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private Optional<ArrayList<Integer>> dfs(@NotNull final Integer raiz,
                                              @NotNull final ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
 
@@ -70,6 +104,13 @@ public class DFS {
         return Optional.empty();
     }
 
+    /**
+     * @param raiz
+     * @param item
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     // TODO Arrumar um nome decente para essa função
     private Optional<ArrayList<Integer>> getIntegers(@NotNull Integer raiz, @NotNull Integer item) throws IOException, InterruptedException {
         if (foiVisitado(item)) {

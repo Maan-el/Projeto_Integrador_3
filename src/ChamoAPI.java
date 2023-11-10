@@ -36,11 +36,20 @@ public class ChamoAPI {
         this.nomeLabirinto = "maze-sample";
     }
 
+    /**
+     * @return
+     */
+    @Contract(pure = true)
     @NotNull
     private static HttpResponse.BodyHandler<String> getBodyHandlerString() {
         return HttpResponse.BodyHandlers.ofString();
     }
 
+    /**
+     * @param json
+     * @return
+     */
+    @Contract("_ -> new")
     @NotNull
     private static HttpRequest.BodyPublisher getBodyPublisherString(@NotNull String json) {
         return HttpRequest.BodyPublishers.ofString(json);
@@ -60,6 +69,9 @@ public class ChamoAPI {
         return resposta.body();
     }
 
+    /**
+     * @return
+     */
     private HttpRequest getHttpGetRequest() {
         return HttpRequest
                 .newBuilder()
@@ -68,6 +80,11 @@ public class ChamoAPI {
                 .build();
     }
 
+    /**
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     final public Node inicio() throws IOException, InterruptedException {
         final Inicio inicio = new Inicio(nomeGrupo, nomeLabirinto);
         final String mensagem = gson.toJson(inicio);
@@ -90,6 +107,10 @@ public class ChamoAPI {
         return toNode(resposta);
     }
 
+    /**
+     * @param json
+     * @return
+     */
     private Node toNode(@NotNull String json) {
         return gson.fromJson(json, Node.class);
     }
@@ -109,7 +130,6 @@ public class ChamoAPI {
      * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
-    // Not tested
     @Contract(pure = true)
     final public void fim_debug(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         if (getCaminhoValidado(caminho).caminho_valido()) {
@@ -119,6 +139,12 @@ public class ChamoAPI {
         }
     }
 
+    /**
+     * @param caminho
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @NotNull
     private CaminhoValidado getCaminhoValidado(@NotNull ArrayList<Integer> caminho) throws IOException, InterruptedException {
         CaminhoParaValidar validaCaminho = new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
@@ -157,6 +183,11 @@ public class ChamoAPI {
         return resposta.body();
     }
 
+    /**
+     * @param uri
+     * @param json
+     * @return
+     */
     @NotNull
     private HttpRequest getHttpPostRequest(@NotNull final URI uri, @NotNull final String json) {
         return HttpRequest
