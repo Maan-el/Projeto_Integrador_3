@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandler;
 import java.util.ArrayList;
 
 public class ChamoAPI {
@@ -18,7 +20,7 @@ public class ChamoAPI {
     @NotNull
     private final String nomeGrupo = "Um_Grupo";
     @NotNull
-    private final String nomeLabirinto;
+    private final String nomeLabirinto = "very-large-maze";
 
     /**
      * Constructor
@@ -28,14 +30,12 @@ public class ChamoAPI {
         this.nomeLabirinto = "maze-sample";
     }
 
-    @NotNull
-    private static HttpResponse.BodyHandler<String> getBodyHandlerString() {
-        return HttpResponse.BodyHandlers.ofString();
-    }
+    final public Node inicio() throws IOException, InterruptedException {
+        final Inicio inicio = new Inicio(nomeGrupo, nomeLabirinto);
+        final String mensagem = gson.toJson(inicio);
+        final String resposta = sendRequest(URI.create("https://gtm.delary.dev/iniciar"), mensagem);
 
-    @NotNull
-    private static HttpRequest.BodyPublisher getBodyPublisherString(@NotNull String json) {
-        return HttpRequest.BodyPublishers.ofString(json);
+        return toNode(resposta);
     }
 
     /**
@@ -45,48 +45,25 @@ public class ChamoAPI {
      */
     @Contract(pure = true)
     final public String getNomes() throws IOException, InterruptedException {
-        final HttpRequest requisicao = getHttpGetRequest();
+        final HttpRequest requisicao = geraRequisicao();
 
-        final HttpResponse<String> resposta = client.send(requisicao, getBodyHandlerString());
+        final HttpResponse<String> resposta = client.send(requisicao, getJson());
 
         return resposta.body();
     }
 
-    private HttpRequest getHttpGetRequest() {
-        return HttpRequest
-                .newBuilder()
-                .GET()
-                .uri(nomesLabirintosUri)
-                .build();
-    }
-
-    final public Node inicio() throws IOException, InterruptedException {
-        final Inicio inicio = new Inicio(nomeGrupo, nomeLabirinto);
-        final String mensagem = gson.toJson(inicio);
-        final String resposta = sendRequest(inicioUri, mensagem);
-
-        return gson.fromJson(resposta, Node.class);
-    }
-
     /**
-     * @param No Próximo nó a ser enviado para a API
+     * @param posicao Próximo nó a ser enviado para a API
      * @return String com o json bruto retornado pela API
      * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
     @Contract(pure = true)
-    final public Node proxMovimento(final int No) throws IOException, InterruptedException {
-        final String mensagem = gson.toJson(new Movimento(this.nomeGrupo, this.nomeLabirinto, No));
-        final String resposta = sendRequest(this.movimentoUri, mensagem);
     final public Node movePara(@NotNull final Integer posicao) throws IOException, InterruptedException {
         final String mensagem = criaMensagemJson(geraMovimento(posicao));
         final String resposta = sendRequest(URI.create("https://gtm.delary.dev/movimentar"), mensagem);
 
         return toNode(resposta);
-    }
-
-    private Node toNode(@NotNull String json) {
-        return gson.fromJson(json, Node.class);
     }
 
     /**
@@ -102,6 +79,55 @@ public class ChamoAPI {
         } else {
             caminhaParaSaida(caminho);
         }
+    }
+
+    private Node toNode(@NotNull String json) {
+        return gson.fromJson(json, Node.class);
+    }
+
+    private String criaMensagemJson(final @NotNull Movimento movimento) {
+        return gson.toJson(movimento);
+    }
+
+    private CaminhoValidado getCaminhoValidado(@NotNull final String resposta) {
+        return gson.fromJson(resposta, CaminhoValidado.class);
+    }
+
+    private String criaMensagem(CaminhoParaValidar validaCaminho) {
+        return gson.toJson(validaCaminho);
+    }
+
+    @NotNull
+    @Contract("_ -> new")
+    private Movimento geraMovimento(final int posicao) {
+        return new Movimento(this.nomeGrupo, this.nomeLabirinto, posicao);
+    }
+
+    @NotNull
+    private CaminhoParaValidar getValidaCaminho(@NotNull ArrayList<Integer> caminho) {
+        return new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
+    }
+
+    @NotNull
+    private BodyHandler<String> getJson() {
+        return HttpResponse.BodyHandlers.ofString();
+    }
+
+    @NotNull
+    private BodyPublisher postJson(@NotNull final String json) {
+        return HttpRequest
+                .BodyPublishers
+                .ofString(json);
+    }
+
+    @NotNull
+    private HttpRequest getHttpPostRequest(@NotNull final URI uri, @NotNull final String json) {
+        return HttpRequest
+                .newBuilder()
+                .uri(uri)
+                .headers("Content-Type", "application/json")
+                .POST(postJson(json))
+                .build();
     }
 
     private HttpRequest geraRequisicao() {
@@ -123,6 +149,7 @@ public class ChamoAPI {
 
         sendRequestUnsafe(URI.create("https://gtm.delary.dev/movimentar"), mensagem);
     }
+
     @NotNull
     private CaminhoValidado getCaminhoValidado(@NotNull ArrayList<Integer> caminho) throws IOException, InterruptedException {
         CaminhoParaValidar validaCaminho = new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
@@ -161,14 +188,16 @@ public class ChamoAPI {
         return resposta.body();
     }
 
-    @NotNull
-    private HttpRequest getHttpPostRequest(@NotNull final URI uri, @NotNull final String json) {
-        return HttpRequest
-                .newBuilder()
-                .uri(uri)
-                .headers("Content-Type", "application/json")
-                .POST(getBodyPublisherString(json))
-                .build();
+    /**
+     * Envia uma mensagem para a API, ignorando qualquer retorno da API
+     * Criada pois o processo de enviar informação para a API é o maior gargalo do programa
+     *
+     * @param uri  Uri da conexão
+     * @param json Mensagem a ser enviada
+     */
+    private void sendRequestUnsafe(@NotNull final URI uri, @NotNull final String json) {
+        final HttpRequest mensagem = getHttpPostRequest(uri, json);
+        client.sendAsync(mensagem, getJson());
     }
 
 
