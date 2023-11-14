@@ -27,7 +27,6 @@ public class ChamoAPI {
      */
     @Contract(pure = true)
     public ChamoAPI() {
-        this.nomeLabirinto = "maze-sample";
     }
 
     final public Node inicio() throws IOException, InterruptedException {
@@ -152,13 +151,13 @@ public class ChamoAPI {
 
     @NotNull
     private CaminhoValidado getCaminhoValidado(@NotNull ArrayList<Integer> caminho) throws IOException, InterruptedException {
-        CaminhoParaValidar validaCaminho = new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
+        CaminhoParaValidar validaCaminho = getValidaCaminho(caminho);
 
-        final String mensagem = gson.toJson(validaCaminho);
+        final String mensagem = criaMensagem(validaCaminho);
 
         final String resposta = sendRequest(URI.create("https://gtm.delary.dev/validar_caminho"), mensagem);
 
-        return gson.fromJson(resposta, CaminhoValidado.class);
+        return getCaminhoValidado(resposta);
     }
 
     private void caminhaParaSaida(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
@@ -166,7 +165,9 @@ public class ChamoAPI {
 
         caminho.remove(0);
 
-        for (Integer movimento : caminho) proxMovimento(movimento);
+        for (Integer movimento : caminho) {
+            moveParaUnsafe(movimento);
+        }
     }
 
     /**
@@ -179,9 +180,8 @@ public class ChamoAPI {
      */
     @Contract(pure = true)
     private String sendRequest(@NotNull final URI uri, @NotNull final String json) throws IOException, InterruptedException {
-
         final HttpRequest mensagem = getHttpPostRequest(uri, json);
-        final HttpResponse<String> resposta = client.send(mensagem, getBodyHandlerString());
+        final HttpResponse<String> resposta = client.send(mensagem, getJson());
 
         validaRetorno(resposta);
 
