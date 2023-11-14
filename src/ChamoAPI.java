@@ -169,11 +169,24 @@ public class ChamoAPI {
          * O erro é gerado caso haja um erro de formatação no json _ou_ um movimento inválido ocorre.
          * Para facilitar o processo de debug, caso ocorra um erro, o programa irá crashar instantaneamente.
          */
+        final int SUCESSO = 200;
+
+        if (resposta.statusCode() == SUCESSO) return;
         final int ERROR_CODE = 422;
+        final int NOT_FOUND = 404;
         if (resposta.statusCode() == ERROR_CODE) {
             System.err.println("Movimento inválido realizado");
             System.err.println("Parando execução");
-            System.exit(-1);
+            System.exit(resposta.hashCode());
+        } else if (resposta.statusCode() == NOT_FOUND) {
+            System.err.println("URL não encontrada");
+            System.err.println("Parando execução");
+            System.exit(resposta.hashCode());
+        } else {
+            System.err.println("Erro desconhecido encontrado");
+            System.err.println("Status: " + resposta.statusCode() + "; URL: " + resposta.uri());
+            System.err.println("Parando execução");
+            System.exit(resposta.hashCode());
         }
     }
 }
