@@ -16,14 +16,6 @@ public class ChamoAPI {
     @NotNull
     private final HttpClient client = HttpClient.newHttpClient();
     @NotNull
-    private final URI movimentoUri = URI.create("https://gtm.delary.dev/movimentar");
-    @NotNull
-    private final URI inicioUri = URI.create("https://gtm.delary.dev/iniciar");
-    @NotNull
-    private final URI validarUri = URI.create("https://gtm.delary.dev/validar_caminho");
-    @NotNull
-    private final URI nomesLabirintosUri = URI.create("https://gtm.delary.dev/labirintos");
-    @NotNull
     private final String nomeGrupo = "Um_Grupo";
     @NotNull
     private final String nomeLabirinto;
@@ -86,6 +78,9 @@ public class ChamoAPI {
     final public Node proxMovimento(final int No) throws IOException, InterruptedException {
         final String mensagem = gson.toJson(new Movimento(this.nomeGrupo, this.nomeLabirinto, No));
         final String resposta = sendRequest(this.movimentoUri, mensagem);
+    final public Node movePara(@NotNull final Integer posicao) throws IOException, InterruptedException {
+        final String mensagem = criaMensagemJson(geraMovimento(posicao));
+        final String resposta = sendRequest(URI.create("https://gtm.delary.dev/movimentar"), mensagem);
 
         return toNode(resposta);
     }
@@ -109,13 +104,32 @@ public class ChamoAPI {
         }
     }
 
+    private HttpRequest geraRequisicao() {
+        return HttpRequest
+                .newBuilder()
+                .GET()
+                .uri(URI.create("https://gtm.delary.dev/labirintos"))
+                .build();
+    }
+
+    /**
+     * Essa função move o rato pelo labirinto da API.
+     * Não é feita nenhuma validação no valor passado para a API, caso ocorra um erro de movimento, não haverá detecção
+     *
+     * @param posicao Para onde devo ir no grafo
+     */
+    private void moveParaUnsafe(@NotNull final Integer posicao) {
+        final String mensagem = criaMensagemJson(geraMovimento(posicao));
+
+        sendRequestUnsafe(URI.create("https://gtm.delary.dev/movimentar"), mensagem);
+    }
     @NotNull
     private CaminhoValidado getCaminhoValidado(@NotNull ArrayList<Integer> caminho) throws IOException, InterruptedException {
         CaminhoParaValidar validaCaminho = new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
 
         final String mensagem = gson.toJson(validaCaminho);
 
-        final String resposta = sendRequest(this.validarUri, mensagem);
+        final String resposta = sendRequest(URI.create("https://gtm.delary.dev/validar_caminho"), mensagem);
 
         return gson.fromJson(resposta, CaminhoValidado.class);
     }
