@@ -157,6 +157,7 @@ public class ChamoAPI {
                 .build();
     }
 
+
     /**
      * A API tem apenas dois valores, sucesso e erro.
      * Caso encontremos o estado de erro, crashar o programa
@@ -172,6 +173,10 @@ public class ChamoAPI {
         final int SUCESSO = 200;
 
         if (resposta.statusCode() == SUCESSO) return;
+        validaErro(resposta);
+    }
+
+    private void validaErro(@NotNull HttpResponse<String> resposta) {
         final int ERROR_CODE = 422;
         final int NOT_FOUND = 404;
         if (resposta.statusCode() == ERROR_CODE) {
