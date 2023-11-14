@@ -27,14 +27,14 @@ public class Main {
         }
 
         System.out.println(
-                dfs
-                .getGrafo()
-                .listaAdjacencia()
-                .entrySet());
+                dfs.getGrafo()
+                        .listaAdjacencia()
+                        .entrySet());
 
         final long fim = System.nanoTime();
+        final long ms = (fim - comeco) / 1_000_000;
 
-        System.out.println("Execução = " + (fim - comeco));
+        System.out.println("Execução = " + ms + "ms");
     }
 
 }
