@@ -163,7 +163,7 @@ public class ChamoAPI {
      *
      * @param resposta Comunicação com a API que precisa ser validada
      */
-    private <T> void validaRetorno(@NotNull final HttpResponse<T> resposta) {
+    private void validaRetorno(@NotNull final HttpResponse<String> resposta) {
         /*
          * A API, no momento, possui apenas dois códigos de resposta, 200 e 422.
          * O erro é gerado caso haja um erro de formatação no json _ou_ um movimento inválido ocorre.
