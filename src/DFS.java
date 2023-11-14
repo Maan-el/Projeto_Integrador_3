@@ -84,8 +84,8 @@ public class DFS {
 
         caminho.map((xs) -> xs.add(raiz));
 
-        //noinspection ResultOfMethodCallIgnored
         if (caminho.isEmpty()) {
+            //noinspection ResultOfMethodCallIgnored
             API.movePara(raiz);
         }
 
