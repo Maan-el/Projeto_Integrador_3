@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
+        final long comeco = System.nanoTime();
+
         DFS dfs = new DFS();
 
         ChamoAPI api = new ChamoAPI();
@@ -29,5 +31,10 @@ public class Main {
                 .getGrafo()
                 .listaAdjacencia()
                 .entrySet());
+
+        final long fim = System.nanoTime();
+
+        System.out.println("Execução = " + (fim - comeco));
     }
+
 }
