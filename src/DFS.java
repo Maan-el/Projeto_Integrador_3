@@ -10,7 +10,6 @@ public class DFS {
     private final ChamoAPI API;
     @NotNull
     private final HashSet<Integer> visitados;
-
     private Grafo grafo;
 
     public DFS() {
@@ -63,8 +62,8 @@ public class DFS {
                                              @NotNull final ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
 
         for (var item : vizinhos) {
-            Optional<ArrayList<Integer>> node = getIntegers(raiz, item);
-            if (node.isPresent()) return node;
+            Optional<ArrayList<Integer>> lista = getIntegers(raiz, item);
+            if (lista.isPresent()) return lista;
         }
         return Optional.empty();
     }
@@ -75,7 +74,7 @@ public class DFS {
             return Optional.empty();
         }
 
-        Node node = API.proxMovimento(item);
+        Node node = API.movePara(item);
 
         grafo.add(node);
 
@@ -87,7 +86,7 @@ public class DFS {
 
         //noinspection ResultOfMethodCallIgnored
         if (caminho.isEmpty()) {
-            API.proxMovimento(raiz);
+            API.movePara(raiz);
         }
 
         return caminho;
