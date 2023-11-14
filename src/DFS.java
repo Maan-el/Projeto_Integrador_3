@@ -17,6 +17,30 @@ public class DFS {
         API = new ChamoAPI();
     }
 
+    public final Grafo getGrafo() {
+        return grafo;
+    }
+
+
+    final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
+        Node node = API.inicio();
+
+        grafo = getNewGrafo(node);
+
+        foiVisitado(node.posAtual());
+
+        return getCaminho(node);
+    }
+
+    @NotNull
+    private ArrayList<Integer> getCaminho(@NotNull Node node) throws IOException, InterruptedException {
+        final var caminhoInverso = dfs(node.posAtual(), node.vizinhos()).orElse(null);
+
+        assert caminhoInverso != null;
+
+        return fixCaminho(caminhoInverso);
+    }
+
     @NotNull
     private ArrayList<Integer> fixCaminho(@NotNull ArrayList<Integer> caminhoReverso) {
         return new ArrayList<>(caminhoReverso.reversed());
@@ -26,24 +50,6 @@ public class DFS {
     @NotNull
     private Optional<ArrayList<Integer>> finalDoCaminho(@NotNull Node node, @NotNull Integer raiz) {
         return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
-    }
-
-    public final Grafo getGrafo() {
-        return grafo;
-    }
-
-    final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
-        Node node = API.inicio();
-
-        grafo = getNewGrafo(node);
-
-        foiVisitado(node.posAtual());
-
-        final var caminhoInverso = dfs(node.posAtual(), node.vizinhos()).orElse(null);
-
-        assert caminhoInverso != null;
-
-        return fixCaminho(caminhoInverso);
     }
 
     @Contract("_ -> new")
