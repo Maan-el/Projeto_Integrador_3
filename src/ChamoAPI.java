@@ -7,20 +7,18 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
 import java.util.ArrayList;
 
 public class ChamoAPI {
-    @NotNull
     private final Gson gson = new Gson();
     @NotNull
     private final HttpClient client = HttpClient.newHttpClient();
     @NotNull
     private final String nomeGrupo = "Um_Grupo";
     @NotNull
-    private final String nomeLabirinto = "very-large-maze";
+    private final String nomeLabirinto = "large-maze";
 
     /**
      * Constructor
@@ -29,14 +27,26 @@ public class ChamoAPI {
     public ChamoAPI() {
     }
 
-    final public Node inicio() throws IOException, InterruptedException {
-        final Inicio inicio = new Inicio(nomeGrupo, nomeLabirinto);
+    @NotNull
+    private static URI getUriMovimentar() {
+        return URI.create("https://gtm.delary.dev/movimentar");
+    }
+
+    @NotNull
+    private static BodyHandler<String> getJson() {
+        return HttpResponse.BodyHandlers.ofString();
+    }
+
     final public String inicio() throws IOException, InterruptedException {
         final Inicio inicio = new Inicio(this.nomeGrupo, this.nomeLabirinto);
         final String mensagem = gson.toJson(inicio);
-        final String resposta = sendRequest(URI.create("https://gtm.delary.dev/iniciar"), mensagem);
 
-        return toNode(resposta);
+        return sendRequest(getUriIniciar(), mensagem);
+    }
+
+    @NotNull
+    private static URI getUriIniciar() {
+        return URI.create("https://gtm.delary.dev/iniciar");
     }
 
     /**
@@ -81,10 +91,6 @@ public class ChamoAPI {
         }
     }
 
-    private Node toNode(@NotNull String json) {
-        return gson.fromJson(json, Node.class);
-    }
-
     private String criaMensagemJson(final @NotNull Movimento movimento) {
         return gson.toJson(movimento);
     }
@@ -109,24 +115,12 @@ public class ChamoAPI {
     }
 
     @NotNull
-    private BodyHandler<String> getJson() {
-        return HttpResponse.BodyHandlers.ofString();
-    }
-
-    @NotNull
-    private BodyPublisher postJson(@NotNull final String json) {
-        return HttpRequest
-                .BodyPublishers
-                .ofString(json);
-    }
-
-    @NotNull
     private HttpRequest getHttpPostRequest(@NotNull final URI uri, @NotNull final String json) {
         return HttpRequest
                 .newBuilder()
                 .uri(uri)
                 .headers("Content-Type", "application/json")
-                .POST(postJson(json))
+                .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
     }
 
@@ -147,7 +141,7 @@ public class ChamoAPI {
     private void moveParaUnsafe(@NotNull final Integer posicao) {
         final String mensagem = criaMensagemJson(geraMovimento(posicao));
 
-        sendRequestUnsafe(URI.create("https://gtm.delary.dev/movimentar"), mensagem);
+        sendRequestUnsafe(getUriMovimentar(), mensagem);
     }
 
     @NotNull
@@ -159,6 +153,11 @@ public class ChamoAPI {
         final String resposta = sendRequest(URI.create("https://gtm.delary.dev/validar_caminho"), mensagem);
 
         return getCaminhoValidado(resposta);
+    }
+
+    @NotNull
+    private static URI getUriValidar() {
+        return URI.create("https://gtm.delary.dev/validar_caminho");
     }
 
     private void caminhaParaSaida(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
