@@ -3,10 +3,6 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        final long comeco = System.nanoTime();
-
-        DFS dfs = new DFS();
-
         ChamoAPI api = new ChamoAPI();
 
         DFS dfs = new DFS(api);
@@ -14,31 +10,23 @@ public class Main {
 
         ArrayList<Integer> movimentos = null;
 
+        final long inicio = System.nanoTime();
+
         try {
-            System.out.println(api.getNomes());
+//            System.out.println(api.getNomes());
             movimentos = dfs.inicio();
+            api.fim(movimentos);
         } catch (IOException | InterruptedException e) {
             System.err.println(e.getMessage());
             System.exit(e.hashCode());
         }
 
         System.out.println(movimentos);
-
-        try {
-            api.fim(movimentos);
-        } catch (IOException | InterruptedException e) {
-            System.err.println(e.getMessage());
-        }
-
-        System.out.println(
-                dfs.getGrafo()
-                        .listaAdjacencia()
-                        .entrySet());
+        System.out.println(dfs.getGrafo().listaAdjacencia().entrySet() + " " + dfs.getGrafo().saidas());
 
         final long fim = System.nanoTime();
-        final long ms = (fim - comeco) / 1_000_000;
+        final long ms = (fim - inicio) / 1_000_000;
 
         System.out.println("Execução = " + ms + "ms");
     }
-
 }
