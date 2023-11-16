@@ -12,9 +12,11 @@ public class DFS {
     private final HashSet<Integer> visitados;
     private Grafo grafo;
 
-    public DFS() {
+    private final Gson gson = new Gson();
+
+    public DFS(@NotNull final ChamoAPI api) {
+        API = api;
         visitados = new HashSet<>();
-        API = new ChamoAPI();
     }
 
     public final Grafo getGrafo() {

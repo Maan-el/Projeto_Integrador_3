@@ -8,6 +8,10 @@ public class Main {
         DFS dfs = new DFS();
 
         ChamoAPI api = new ChamoAPI();
+
+        DFS dfs = new DFS(api);
+
+
         ArrayList<Integer> movimentos = null;
 
         try {
