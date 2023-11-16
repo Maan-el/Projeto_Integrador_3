@@ -31,6 +31,8 @@ public class ChamoAPI {
 
     final public Node inicio() throws IOException, InterruptedException {
         final Inicio inicio = new Inicio(nomeGrupo, nomeLabirinto);
+    final public String inicio() throws IOException, InterruptedException {
+        final Inicio inicio = new Inicio(this.nomeGrupo, this.nomeLabirinto);
         final String mensagem = gson.toJson(inicio);
         final String resposta = sendRequest(URI.create("https://gtm.delary.dev/iniciar"), mensagem);
 
@@ -58,11 +60,10 @@ public class ChamoAPI {
      * @throws InterruptedException ^C (Processo cancelado)
      */
     @Contract(pure = true)
-    final public Node movePara(@NotNull final Integer posicao) throws IOException, InterruptedException {
+    final public String movePara(@NotNull final Integer posicao) throws IOException, InterruptedException {
         final String mensagem = criaMensagemJson(geraMovimento(posicao));
-        final String resposta = sendRequest(URI.create("https://gtm.delary.dev/movimentar"), mensagem);
 
-        return toNode(resposta);
+        return sendRequest(URI.create("https://gtm.delary.dev/movimentar"), mensagem);
     }
 
     /**

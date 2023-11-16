@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import comunicacao.Node;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,9 @@ public class DFS {
 
 
     final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
-        Node node = API.inicio();
+        final String json = API.inicio();
+
+        Node node = toNode(json);
 
         grafo = getNewGrafo(node);
 
@@ -82,7 +85,9 @@ public class DFS {
             return Optional.empty();
         }
 
-        Node node = API.movePara(item);
+        String json = API.movePara(item);
+
+        Node node = toNode(json);
 
         grafo.add(node);
 
@@ -98,6 +103,10 @@ public class DFS {
         }
 
         return caminho;
+    }
+
+    private Node toNode(@NotNull String json) {
+        return gson.fromJson(json, Node.class);
     }
 }
 
