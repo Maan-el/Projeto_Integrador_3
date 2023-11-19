@@ -1,3 +1,5 @@
+import comunicacao.CaminhoValidado;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -7,25 +9,27 @@ public class Main {
 
         DFS dfs = new DFS(api);
 
-
         ArrayList<Integer> movimentos = null;
 
         final long inicio = System.nanoTime();
 
+        System.out.println(api.getLabirinto());
+        CaminhoValidado caminhoValidado = null;
+
         try {
-//            System.out.println(api.getNomes());
             movimentos = dfs.inicio();
-            api.fim(movimentos);
+            caminhoValidado = api.validaCaminho(movimentos);
         } catch (IOException | InterruptedException e) {
             System.err.println(e.getMessage());
             System.exit(e.hashCode());
         }
 
-        System.out.println(movimentos);
-        System.out.println(dfs.getGrafo().listaAdjacencia().entrySet() + " " + dfs.getGrafo().saidas());
+        System.out.println(caminhoValidado.caminho_valido() + " " + caminhoValidado.quantidade_movimentos());
 
         final long fim = System.nanoTime();
         final long ms = (fim - inicio) / 1_000_000;
+
+        System.out.println(movimentos);
 
         System.out.println("Execução = " + ms + "ms");
     }

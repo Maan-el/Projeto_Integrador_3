@@ -11,8 +11,6 @@ public class DFS {
     private final ChamoAPI API;
     @NotNull
     private final HashSet<Integer> visitados;
-    private Grafo grafo;
-
     private final Gson gson = new Gson();
 
     public DFS(@NotNull final ChamoAPI api) {
@@ -20,28 +18,17 @@ public class DFS {
         visitados = new HashSet<>();
     }
 
-    public final Grafo getGrafo() {
-        return grafo;
-    }
-
-
     final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
-        final String json = API.inicio();
+        Node node = API.inicio().map(this::toNode).get();
 
-        Node node = toNode(json);
-
-        grafo = getNewGrafo(node);
-
-        foiVisitado(node.posAtual());
+        visitados.add(node.posAtual());
 
         return getCaminho(node);
     }
 
     @NotNull
     private ArrayList<Integer> getCaminho(@NotNull Node node) throws IOException, InterruptedException {
-        final var caminhoInverso = dfs(node.posAtual(), node.vizinhos()).orElse(null);
-
-        assert caminhoInverso != null;
+        final var caminhoInverso = dfs(node.posAtual(), node.vizinhos()).get();
 
         return fixCaminho(caminhoInverso);
     }
@@ -57,21 +44,8 @@ public class DFS {
         return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
     }
 
-    @Contract("_ -> new")
-    @NotNull
-    private Grafo getNewGrafo(@NotNull Node node) {
-        Grafo grafo = new Grafo(node.posAtual(), new HashSet<>(), new HashMap<>());
-        grafo.add(node);
-        return grafo;
-    }
-
-    private boolean foiVisitado(@NotNull Integer node) {
-        return !visitados.add(node);
-    }
-
     private Optional<ArrayList<Integer>> dfs(@NotNull final Integer raiz,
                                              @NotNull final ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
-
         for (var item : vizinhos) {
             Optional<ArrayList<Integer>> lista = getIntegers(raiz, item);
             if (lista.isPresent()) return lista;
@@ -81,15 +55,13 @@ public class DFS {
 
     // TODO Arrumar um nome decente para essa função
     private Optional<ArrayList<Integer>> getIntegers(@NotNull Integer raiz, @NotNull Integer item) throws IOException, InterruptedException {
-        if (foiVisitado(item)) {
+        if (!visitados.add(item)) {
             return Optional.empty();
         }
 
-        String json = API.movePara(item);
+        String json = API.proxMovimento(item);
 
         Node node = toNode(json);
-
-        grafo.add(node);
 
         if (node.fim()) return finalDoCaminho(node, raiz);
 
@@ -99,7 +71,7 @@ public class DFS {
 
         if (caminho.isEmpty()) {
             //noinspection ResultOfMethodCallIgnored
-            API.movePara(raiz);
+            API.proxMovimento(raiz);
         }
 
         return caminho;
