@@ -82,20 +82,15 @@ public class ChamoAPI {
         return getNomeLabirinto();
     }
 
-    final public Optional<String> inicio() {
+    final public String inicio() throws IOException, InterruptedException {
 
         String resposta;
 
         final Inicio inicio = new Inicio(getID(), getNomeLabirinto());
         final String json = gson.toJson(inicio);
 
-        try {
-            resposta = sendRequest(getUriInicio(), json);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-
-        return Optional.of(resposta);
+        resposta = sendRequest(getUriInicio(), json);
+        return resposta;
     }
 
     /**

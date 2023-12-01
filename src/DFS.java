@@ -19,7 +19,7 @@ public class DFS {
     }
 
     final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
-        Node node = API.inicio().map(this::toNode).get();
+        Node node = API.inicio().transform(this::toNode);
 
         visitados.add(node.posAtual());
 
@@ -27,20 +27,20 @@ public class DFS {
     }
 
     @NotNull
-    private ArrayList<Integer> getCaminho(@NotNull Node node) throws IOException, InterruptedException {
+    private ArrayList<Integer> getCaminho(@NotNull final Node node) throws IOException, InterruptedException {
         final var caminhoInverso = dfs(node.posAtual(), node.vizinhos()).get();
 
         return fixCaminho(caminhoInverso);
     }
 
     @NotNull
-    private ArrayList<Integer> fixCaminho(@NotNull ArrayList<Integer> caminhoReverso) {
+    private ArrayList<Integer> fixCaminho(@NotNull final ArrayList<Integer> caminhoReverso) {
         return new ArrayList<>(caminhoReverso.reversed());
     }
 
     @Contract("_, _ -> new")
     @NotNull
-    private Optional<ArrayList<Integer>> finalDoCaminho(@NotNull Node node, @NotNull Integer raiz) {
+    private Optional<ArrayList<Integer>> finalDoCaminho(@NotNull final Node node, @NotNull final Integer raiz) {
         return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
     }
 
@@ -54,14 +54,13 @@ public class DFS {
     }
 
     // TODO Arrumar um nome decente para essa função
-    private Optional<ArrayList<Integer>> getIntegers(@NotNull Integer raiz, @NotNull Integer item) throws IOException, InterruptedException {
+    private Optional<ArrayList<Integer>> getIntegers(@NotNull final Integer raiz,
+                                                     @NotNull final Integer item) throws IOException, InterruptedException {
         if (!visitados.add(item)) {
             return Optional.empty();
         }
 
-        String json = API.proxMovimento(item);
-
-        Node node = toNode(json);
+        Node node = API.proxMovimento(item).transform(this::toNode);
 
         if (node.fim()) return finalDoCaminho(node, raiz);
 
