@@ -12,55 +12,33 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.function.Function;
 
 public class ChamoAPI {
     private final Gson gson;
-    private final HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client;
+    private final String nomeLabirinto;
+    private final String id;
+    private final URI nome;
+    private final URI inicio;
+    private final URI movimento;
+    private final URI validacao;
 
     @Contract(pure = true)
     public ChamoAPI() {
+        id = "Um-Grupo";
+        nomeLabirinto = "large-maze";
         gson = new Gson();
-    }
-
-    @NotNull
-    @Contract(" -> new")
-    private URI getUriNome() {
-        return URI.create("https://gtm.delary.dev/" + "labirintos");
-    }
-
-    @NotNull
-    @Contract(" -> new")
-    private URI getUriInicio() {
-        return URI.create("https://gtm.delary.dev/" + "iniciar");
-    }
-
-    @NotNull
-    @Contract(" -> new")
-    private URI getUriMovimento() {
-        return URI.create("https://gtm.delary.dev/" + "movimentar");
-    }
-
-    @Contract(" -> new")
-    private @NotNull URI getUriValidacao() {
-        return URI.create("https://gtm.delary.dev/" + "validar_caminho");
+        nome = URI.create("https://gtm.delary.dev/" + "labirintos");
+        inicio = URI.create("https://gtm.delary.dev/" + "iniciar");
+        movimento = URI.create("https://gtm.delary.dev/" + "movimentar");
+        validacao = URI.create("https://gtm.delary.dev/" + "validar_caminho");
+        client = HttpClient.newHttpClient();
     }
 
     @NotNull
     private HttpResponse.BodyHandler<String> getOfString() {
         return HttpResponse.BodyHandlers.ofString();
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    private String getID() {
-        return "Um_Grupo";
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    private String getNomeLabirinto() {
-        return "large-maze";
     }
 
     /**
@@ -70,7 +48,7 @@ public class ChamoAPI {
      */
     @Contract(pure = true)
     final public String getNomes() throws IOException, InterruptedException {
-        final var request = HttpRequest.newBuilder().GET().uri(getUriNome()).build();
+        final var request = HttpRequest.newBuilder().GET().uri(this.nome).build();
 
         final var response = client.send(request, getOfString());
 
@@ -79,32 +57,29 @@ public class ChamoAPI {
 
     @Contract(pure = true)
     final public @NotNull String getLabirinto() {
-        return getNomeLabirinto();
+        return this.nomeLabirinto;
     }
 
     final public String inicio() throws IOException, InterruptedException {
 
-        String resposta;
-
-        final Inicio inicio = new Inicio(getID(), getNomeLabirinto());
+        final var inicio = new Inicio(this.id, this.nomeLabirinto);
         final String json = gson.toJson(inicio);
 
-        resposta = sendRequest(getUriInicio(), json);
-        return resposta;
+        return sendRequest(this.inicio, json);
     }
 
     /**
-     * @param No Proximo nó a ser enviado para a API
+     * @param no Proximo nó a ser enviado para a API
      * @return String com o json bruto retornado pela API
      * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
     @Contract(pure = true)
-    final public @NotNull String proxMovimento(final int No) throws IOException, InterruptedException {
-        Movimento movimento = new Movimento(getID(), getNomeLabirinto(), No);
+    final public @NotNull String proxMovimento(final int no) throws IOException, InterruptedException {
+        final var movimento = new Movimento(this.id, this.nomeLabirinto, no);
         final String json = gson.toJson(movimento);
 
-        return sendRequest(getUriMovimento(), json);
+        return sendRequest(this.movimento, json);
     }
 
     /**
@@ -116,19 +91,23 @@ public class ChamoAPI {
     // Not tested
     @Contract(pure = true)
     final public @NotNull CaminhoValidado validaCaminho(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
-        CaminhoParaValidar validaCaminho = new CaminhoParaValidar(getID(), getNomeLabirinto(), caminho);
+        final var validaCaminho = new CaminhoParaValidar(this.id, this.nomeLabirinto, caminho);
 
         final String json = gson.toJson(validaCaminho);
 
-        final String retorno = sendRequest(getUriValidacao(), json);
+        final var caminhoValidado = sendRequest(this.validacao, json).transform(validado());
 
-        CaminhoValidado caminhoValidado = gson.fromJson(retorno, CaminhoValidado.class);
-        if (caminhoValidado.caminho_valido()) {
-            caminho.removeFirst();
-            gotoFim(caminho);
-        }
+//        if (caminhoValidado.caminho_valido()) {
+//            caminho.removeFirst();
+//            gotoFim(caminho);
+//        }
 
         return caminhoValidado;
+    }
+
+    @NotNull
+    private Function<String, CaminhoValidado> validado() {
+        return (retorno) -> gson.fromJson(retorno, CaminhoValidado.class);
     }
 
     @Contract(pure = true)
@@ -141,12 +120,12 @@ public class ChamoAPI {
     }
 
     private void proxMovimentoUnsafe(final int posicao) {
-        Movimento movimento = new Movimento(getID(), getNomeLabirinto(), posicao);
+        Movimento movimento = new Movimento(this.id, this.nomeLabirinto, posicao);
         final String json = gson.toJson(movimento);
 
         HttpRequest request = HttpRequest
                 .newBuilder()
-                .uri(getUriMovimento())
+                .uri(this.movimento)
                 .headers("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
@@ -156,7 +135,14 @@ public class ChamoAPI {
 
     @Contract(pure = true)
     private String sendRequest(final URI uri, final String json) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder().uri(uri).headers("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(json)).build();
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .uri(uri)
+                .headers("Content-Type", "application/json")
+                .POST(HttpRequest
+                        .BodyPublishers
+                        .ofString(json))
+                .build();
 
         return client.send(request, getOfString()).body();
     }

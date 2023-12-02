@@ -4,38 +4,36 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class DFS {
     @NotNull
-    private final ChamoAPI API;
+    private final ChamoAPI ChamoAPI;
     @NotNull
-    private final HashSet<Integer> visitados;
+    private final HashSet<Integer> visitados = new HashSet<>();
     private final Gson gson = new Gson();
 
-    public DFS(@NotNull final ChamoAPI api) {
-        API = api;
-        visitados = new HashSet<>();
+    public DFS(@NotNull final ChamoAPI chamoApi) {
+        ChamoAPI = chamoApi;
     }
 
     final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
-        Node node = API.inicio().transform(this::toNode);
+        Node node = ChamoAPI.inicio().transform(node());
 
         visitados.add(node.posAtual());
 
-        return getCaminho(node);
+        return dfs(node)
+                .map(fixCaminho())
+                .get();
     }
 
-    @NotNull
-    private ArrayList<Integer> getCaminho(@NotNull final Node node) throws IOException, InterruptedException {
-        final var caminhoInverso = dfs(node.posAtual(), node.vizinhos()).get();
-
-        return fixCaminho(caminhoInverso);
-    }
-
-    @NotNull
-    private ArrayList<Integer> fixCaminho(@NotNull final ArrayList<Integer> caminhoReverso) {
-        return new ArrayList<>(caminhoReverso.reversed());
+    @Contract(pure = true)
+    private @NotNull Function<List<Integer>, ArrayList<Integer>> fixCaminho() {
+        return (caminho) -> new ArrayList<>(caminho.reversed());
     }
 
     @Contract("_, _ -> new")
@@ -44,10 +42,9 @@ public class DFS {
         return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
     }
 
-    private Optional<ArrayList<Integer>> dfs(@NotNull final Integer raiz,
-                                             @NotNull final ArrayList<Integer> vizinhos) throws IOException, InterruptedException {
-        for (var item : vizinhos) {
-            Optional<ArrayList<Integer>> lista = getIntegers(raiz, item);
+    private Optional<ArrayList<Integer>> dfs(@NotNull final Node raiz) throws IOException, InterruptedException {
+        for (var item : raiz.vizinhos()) {
+            Optional<ArrayList<Integer>> lista = getIntegers(raiz.posAtual(), item);
             if (lista.isPresent()) return lista;
         }
         return Optional.empty();
@@ -60,24 +57,26 @@ public class DFS {
             return Optional.empty();
         }
 
-        Node node = API.proxMovimento(item).transform(this::toNode);
+        final var node = ChamoAPI
+                .proxMovimento(item)
+                .transform(node());
 
         if (node.fim()) return finalDoCaminho(node, raiz);
 
-        var caminho = dfs(node.posAtual(), node.vizinhos());
-
-        caminho.map((xs) -> xs.add(raiz));
+        final var caminho = dfs(node);
+        caminho.map((caminho1) -> caminho1.add(raiz));
 
         if (caminho.isEmpty()) {
             //noinspection ResultOfMethodCallIgnored
-            API.proxMovimento(raiz);
+            ChamoAPI.proxMovimento(raiz);
         }
 
         return caminho;
     }
 
-    private Node toNode(@NotNull String json) {
-        return gson.fromJson(json, Node.class);
+    @Contract(pure = true)
+    private @NotNull Function<String, Node> node() {
+        return (json) -> gson.fromJson(json, Node.class);
     }
 }
 
