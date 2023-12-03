@@ -25,6 +25,9 @@ public class DFS {
 
         visitados.add(node.posAtual());
 
+        // O optional existe para uso interno do DFS,
+        // ápara representar uma posição onde não existem movimentos vãlidos
+        //noinspection OptionalGetWithoutIsPresent
         return dfs(node)
                 .map(fixCaminho())
                 .get();
@@ -37,15 +40,14 @@ public class DFS {
 
     private Optional<ArrayList<Integer>> dfs(@NotNull final Node raiz) throws IOException, InterruptedException {
         for (var posicao : raiz.vizinhos()) {
-            Optional<ArrayList<Integer>> lista = getIntegers(raiz.posAtual(), posicao);
+            Optional<ArrayList<Integer>> lista = verificaValores(raiz.posAtual(), posicao);
             if (lista.isPresent()) return lista;
         }
         return Optional.empty();
     }
 
-    // TODO Arrumar um nome decente para essa função
-    private Optional<ArrayList<Integer>> getIntegers(final int raiz,
-                                                     final int posicao) throws IOException, InterruptedException {
+    private Optional<ArrayList<Integer>> verificaValores(final int raiz,
+                                                         final int posicao) throws IOException, InterruptedException {
         if (!visitados.add(posicao)) {
             return Optional.empty();
         }

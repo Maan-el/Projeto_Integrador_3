@@ -39,6 +39,7 @@ public class API {
      * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
+    @SuppressWarnings("unused")
     @Contract(pure = true)
     final public String getNomes() throws IOException, InterruptedException {
         final var request = HttpRequest
@@ -93,6 +94,7 @@ public class API {
                 .transform(parser.toCaminhoValidado());
     }
 
+    @SuppressWarnings("unused")
     @Contract(pure = true)
     private void gotoFim(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         for (int posicao : caminho) proxMovimento(posicao);
