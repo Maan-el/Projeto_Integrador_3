@@ -36,4 +36,29 @@ public class Parser {
     public final @NotNull Function<String, CaminhoValidado> toCaminhoValidado() {
         return (json) -> gson.fromJson(json, CaminhoValidado.class);
     }
+
+    @Contract(pure = true)
+    public final @NotNull Function<Node, String> fromNode() {
+        return gson::toJson;
+    }
+
+    @Contract(pure = true)
+    public final @NotNull Function<Inicio, String> fromInicio() {
+        return gson::toJson;
+    }
+
+    @Contract(pure = true)
+    public final @NotNull Function<Movimento, String> fromMovimento() {
+        return gson::toJson;
+    }
+
+    @Contract(pure = true)
+    public final @NotNull Function<CaminhoParaValidar, String> fromCaminhoParaValidar() {
+        return gson::toJson;
+    }
+
+    @Contract(pure = true)
+    public final @NotNull Function<CaminhoValidado, String> fromCaminhoValidado() {
+        return gson::toJson;
+    }
 }
