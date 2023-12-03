@@ -27,6 +27,11 @@ public class Parser {
     }
 
     @Contract(pure = true)
+    public final @NotNull Function<String, Node> toNode() {
+        return (json) -> gson.fromJson(json, Node.class);
+    }
+
+    @Contract(pure = true)
     public final @NotNull Function<String, Movimento> toMovimento() {
         return (json) -> gson.fromJson(json, Movimento.class);
     }
@@ -42,12 +47,12 @@ public class Parser {
     }
 
     @Contract(pure = true)
-    public final @NotNull Function<Node, String> fromNode() {
+    public final @NotNull Function<Inicio, String> fromInicio() {
         return gson::toJson;
     }
 
     @Contract(pure = true)
-    public final @NotNull Function<Inicio, String> fromInicio() {
+    public final @NotNull Function<Node, String> fromNode() {
         return gson::toJson;
     }
 
