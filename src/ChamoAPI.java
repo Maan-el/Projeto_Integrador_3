@@ -15,10 +15,8 @@ import java.util.ArrayList;
 import java.util.function.Function;
 
 public class ChamoAPI {
-    private final Gson gson;
+    private final Parser parser;
     private final HttpClient client;
-    private final String nomeLabirinto;
-    private final String id;
     private final URI nome;
     private final URI inicio;
     private final URI movimento;
@@ -26,14 +24,12 @@ public class ChamoAPI {
 
     @Contract(pure = true)
     public ChamoAPI() {
-        id = "Um-Grupo";
-        nomeLabirinto = "large-maze";
-        gson = new Gson();
-        nome = URI.create("https://gtm.delary.dev/" + "labirintos");
-        inicio = URI.create("https://gtm.delary.dev/" + "iniciar");
-        movimento = URI.create("https://gtm.delary.dev/" + "movimentar");
-        validacao = URI.create("https://gtm.delary.dev/" + "validar_caminho");
-        client = HttpClient.newHttpClient();
+        this.nome = URI.create("https://gtm.delary.dev/" + "labirintos");
+        this.inicio = URI.create("https://gtm.delary.dev/" + "iniciar");
+        this.movimento = URI.create("https://gtm.delary.dev/" + "movimentar");
+        this.validacao = URI.create("https://gtm.delary.dev/" + "validar_caminho");
+        this.client = HttpClient.newHttpClient();
+        this.parser = new Parser();
     }
 
     @NotNull
@@ -53,11 +49,6 @@ public class ChamoAPI {
         final var response = client.send(request, getOfString());
 
         return response.body();
-    }
-
-    @Contract(pure = true)
-    final public @NotNull String getLabirinto() {
-        return this.nomeLabirinto;
     }
 
     final public String inicio() throws IOException, InterruptedException {

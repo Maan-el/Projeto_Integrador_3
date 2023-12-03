@@ -7,9 +7,13 @@ import java.util.function.Function;
 
 public class Parser {
     private final Gson gson;
+    private final String nomeGrupo;
+    private final String nomeLabirinto;
 
     public Parser() {
         this.gson = new Gson();
+        this.nomeGrupo = "Um-Grupo";
+        this.nomeLabirinto = "large-maze";
     }
 
     @Contract(pure = true)
