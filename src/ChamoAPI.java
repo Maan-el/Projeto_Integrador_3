@@ -1,4 +1,5 @@
-import comunicacao.*;
+import comunicacao.CaminhoValidado;
+import comunicacao.Node;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandler;
 import java.util.ArrayList;
 
 public class ChamoAPI {
@@ -19,16 +21,16 @@ public class ChamoAPI {
 
     @Contract(pure = true)
     public ChamoAPI() {
+        this.client = HttpClient.newHttpClient();
+        this.parser = new Parser();
         this.nome = URI.create("https://gtm.delary.dev/" + "labirintos");
         this.inicio = URI.create("https://gtm.delary.dev/" + "iniciar");
         this.movimento = URI.create("https://gtm.delary.dev/" + "movimentar");
         this.validacao = URI.create("https://gtm.delary.dev/" + "validar_caminho");
-        this.client = HttpClient.newHttpClient();
-        this.parser = new Parser();
     }
 
     @NotNull
-    private HttpResponse.BodyHandler<String> getOfString() {
+    private BodyHandler<String> getOfString() {
         return HttpResponse.BodyHandlers.ofString();
     }
 
@@ -81,7 +83,6 @@ public class ChamoAPI {
      * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
      */
-    // Not tested
     @Contract(pure = true)
     final public @NotNull CaminhoValidado validaCaminho(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
         final String json = parser
@@ -97,27 +98,8 @@ public class ChamoAPI {
         for (int posicao : caminho) proxMovimento(posicao);
     }
 
-    private void gotoFimUnsafe(@NotNull final ArrayList<Integer> caminho) {
-        for (int posicao : caminho) proxMovimentoUnsafe(posicao);
-    }
-
-    private void proxMovimentoUnsafe(final int posicao) {
-        final String json = parser
-                .newMovimento(posicao)
-                .transform(parser.fromMovimento());
-
-        HttpRequest request = HttpRequest
-                .newBuilder()
-                .uri(this.movimento)
-                .headers("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-
-        client.sendAsync(request, getOfString());
-    }
-
     @Contract(pure = true)
-    private String sendRequest(final URI uri, final String json) throws IOException, InterruptedException {
+    private String sendRequest(@NotNull final URI uri, @NotNull final String json) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest
                 .newBuilder()
                 .uri(uri)
