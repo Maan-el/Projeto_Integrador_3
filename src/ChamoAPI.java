@@ -64,6 +64,7 @@ public class ChamoAPI {
     final public @NotNull String proxMovimento(final int no) throws IOException, InterruptedException {
         final var movimento = new Movimento(this.id, this.nomeLabirinto, no);
         final String json = gson.toJson(movimento);
+    final public @NotNull Node proxMovimento(final int posicao) throws IOException, InterruptedException {
 
         return sendRequest(this.movimento, json);
     }

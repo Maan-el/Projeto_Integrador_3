@@ -51,15 +51,13 @@ public class DFS {
     }
 
     // TODO Arrumar um nome decente para essa função
-    private Optional<ArrayList<Integer>> getIntegers(@NotNull final Integer raiz,
-                                                     @NotNull final Integer item) throws IOException, InterruptedException {
-        if (!visitados.add(item)) {
+    private Optional<ArrayList<Integer>> getIntegers(final int raiz,
+                                                     final int posicao) throws IOException, InterruptedException {
+        if (!visitados.add(posicao)) {
             return Optional.empty();
         }
 
-        final var node = ChamoAPI
-                .proxMovimento(item)
-                .transform(node());
+        final var node = ChamoAPI.proxMovimento(posicao);
 
         if (node.fim()) return finalDoCaminho(node, raiz);
 
