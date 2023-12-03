@@ -3,6 +3,7 @@ import comunicacao.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.function.Function;
 
 public class Parser {
@@ -16,9 +17,19 @@ public class Parser {
         this.nomeLabirinto = "large-maze";
     }
 
-    @Contract(pure = true)
-    public final @NotNull Function<String, Node> toNode() {
-        return (json) -> gson.fromJson(json, Node.class);
+    @Contract(" -> new")
+    public final @NotNull Inicio newInicio() {
+        return new Inicio(this.nomeGrupo, this.nomeLabirinto);
+    }
+
+    @Contract("_ -> new")
+    public final @NotNull Movimento newMovimento(final int posicao) {
+        return new Movimento(this.nomeGrupo, this.nomeLabirinto, posicao);
+    }
+
+    @Contract("_ -> new")
+    public final @NotNull CaminhoParaValidar newCaminhoParaValidar(@NotNull final ArrayList<Integer> caminho) {
+        return new CaminhoParaValidar(this.nomeGrupo, this.nomeLabirinto, caminho);
     }
 
     @Contract(pure = true)
