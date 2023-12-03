@@ -55,14 +55,12 @@ public class ChamoAPI {
                 .newInicio()
                 .transform(parser.fromInicio());
 
-        final var inicio = new Inicio(this.id, this.nomeLabirinto);
-        final String json = gson.toJson(inicio);
-
-        return sendRequest(this.inicio, json);
+        return sendRequest(this.inicio, json)
+                .transform(parser.toNode());
     }
 
     /**
-     * @param no Proximo nó a ser enviado para a API
+     * @param posicao Proximo nó a ser enviado para a API
      * @return String com o json bruto retornado pela API
      * @throws IOException          Erro de conexão
      * @throws InterruptedException ^C (Processo cancelado)
@@ -85,24 +83,13 @@ public class ChamoAPI {
      */
     // Not tested
     @Contract(pure = true)
-    final public @NotNull CaminhoValidado validaCaminho(final ArrayList<Integer> caminho) throws IOException, InterruptedException {
-        final var validaCaminho = new CaminhoParaValidar(this.id, this.nomeLabirinto, caminho);
+    final public @NotNull CaminhoValidado validaCaminho(@NotNull final ArrayList<Integer> caminho) throws IOException, InterruptedException {
+        final String json = parser
+                .newCaminhoParaValidar(caminho)
+                .transform(parser.fromCaminhoParaValidar());
 
-        final String json = gson.toJson(validaCaminho);
-
-        final var caminhoValidado = sendRequest(this.validacao, json).transform(validado());
-
-//        if (caminhoValidado.caminho_valido()) {
-//            caminho.removeFirst();
-//            gotoFim(caminho);
-//        }
-
-        return caminhoValidado;
-    }
-
-    @NotNull
-    private Function<String, CaminhoValidado> validado() {
-        return (retorno) -> gson.fromJson(retorno, CaminhoValidado.class);
+        return sendRequest(this.validacao, json)
+                .transform(parser.toCaminhoValidado());
     }
 
     @Contract(pure = true)
@@ -115,8 +102,9 @@ public class ChamoAPI {
     }
 
     private void proxMovimentoUnsafe(final int posicao) {
-        Movimento movimento = new Movimento(this.id, this.nomeLabirinto, posicao);
-        final String json = gson.toJson(movimento);
+        final String json = parser
+                .newMovimento(posicao)
+                .transform(parser.fromMovimento());
 
         HttpRequest request = HttpRequest
                 .newBuilder()

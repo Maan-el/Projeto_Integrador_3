@@ -1,4 +1,3 @@
-import com.google.gson.Gson;
 import comunicacao.Node;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +21,7 @@ public class DFS {
     }
 
     final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
-        Node node = ChamoAPI.inicio().transform(node());
+        final Node node = ChamoAPI.inicio();
 
         visitados.add(node.posAtual());
 
@@ -36,15 +35,9 @@ public class DFS {
         return (caminho) -> new ArrayList<>(caminho.reversed());
     }
 
-    @Contract("_, _ -> new")
-    @NotNull
-    private Optional<ArrayList<Integer>> finalDoCaminho(@NotNull final Node node, @NotNull final Integer raiz) {
-        return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
-    }
-
     private Optional<ArrayList<Integer>> dfs(@NotNull final Node raiz) throws IOException, InterruptedException {
-        for (var item : raiz.vizinhos()) {
-            Optional<ArrayList<Integer>> lista = getIntegers(raiz.posAtual(), item);
+        for (var posicao : raiz.vizinhos()) {
+            Optional<ArrayList<Integer>> lista = getIntegers(raiz.posAtual(), posicao);
             if (lista.isPresent()) return lista;
         }
         return Optional.empty();
@@ -72,9 +65,10 @@ public class DFS {
         return caminho;
     }
 
-    @Contract(pure = true)
-    private @NotNull Function<String, Node> node() {
-        return (json) -> gson.fromJson(json, Node.class);
+    @Contract("_, _ -> new")
+    @NotNull
+    private Optional<ArrayList<Integer>> finalDoCaminho(@NotNull final Node node, final int raiz) {
+        return Optional.of(new ArrayList<>(List.of(node.posAtual(), raiz)));
     }
 }
 
