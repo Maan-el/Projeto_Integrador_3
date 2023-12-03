@@ -11,7 +11,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
 import java.util.ArrayList;
 
-public class ChamoAPI {
+public class API {
     private final Parser parser;
     private final HttpClient client;
     private final URI nome;
@@ -20,7 +20,7 @@ public class ChamoAPI {
     private final URI validacao;
 
     @Contract(pure = true)
-    public ChamoAPI() {
+    public API() {
         this.client = HttpClient.newHttpClient();
         this.parser = new Parser();
         this.nome = URI.create("https://gtm.delary.dev/" + "labirintos");

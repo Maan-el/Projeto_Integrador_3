@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        ChamoAPI api = new ChamoAPI();
+        API api = new API();
 
         DFS dfs = new DFS(api);
 

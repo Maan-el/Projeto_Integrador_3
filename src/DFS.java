@@ -11,17 +11,17 @@ import java.util.function.Function;
 
 public class DFS {
     @NotNull
-    private final ChamoAPI ChamoAPI;
+    private final API api;
     @NotNull
     private final HashSet<Integer> visitados;
 
-    public DFS(@NotNull final ChamoAPI chamoApi) {
-        this.ChamoAPI = chamoApi;
+    public DFS(@NotNull final API api) {
+        this.api = api;
         this.visitados = new HashSet<>();
     }
 
     final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
-        final Node node = ChamoAPI.inicio();
+        final Node node = api.inicio();
 
         visitados.add(node.posAtual());
 
@@ -50,7 +50,7 @@ public class DFS {
             return Optional.empty();
         }
 
-        final var node = ChamoAPI.proxMovimento(posicao);
+        final var node = api.proxMovimento(posicao);
 
         if (node.fim()) return finalDoCaminho(node, raiz);
 
@@ -59,7 +59,7 @@ public class DFS {
 
         if (caminho.isEmpty()) {
             //noinspection ResultOfMethodCallIgnored
-            ChamoAPI.proxMovimento(raiz);
+            api.proxMovimento(raiz);
         }
 
         return caminho;
