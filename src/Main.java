@@ -5,15 +5,13 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        API api = new API();
-
-        DFS dfs = new DFS(api);
+        final API api = new API();
+        final DFS dfs = new DFS(api);
 
         ArrayList<Integer> movimentos = null;
+        CaminhoValidado caminhoValidado = null;
 
         final long inicio = System.nanoTime();
-
-        CaminhoValidado caminhoValidado = null;
 
         try {
             movimentos = dfs.inicio();

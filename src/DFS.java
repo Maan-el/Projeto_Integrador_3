@@ -38,16 +38,18 @@ public class DFS {
         return (caminho) -> new ArrayList<>(caminho.reversed());
     }
 
+    @Contract(pure = true)
     private Optional<ArrayList<Integer>> dfs(@NotNull final Node raiz) throws IOException, InterruptedException {
         for (var posicao : raiz.vizinhos()) {
-            Optional<ArrayList<Integer>> lista = verificaValores(raiz.posAtual(), posicao);
+            final var lista = verificaValores(raiz.posAtual(), posicao);
             if (lista.isPresent()) return lista;
         }
         return Optional.empty();
     }
 
-    private Optional<ArrayList<Integer>> verificaValores(final int raiz,
-                                                         final int posicao) throws IOException, InterruptedException {
+    @Contract(pure = true)
+    private @NotNull Optional<ArrayList<Integer>> verificaValores(final int raiz,
+                                                                  final int posicao) throws IOException, InterruptedException {
         if (!visitados.add(posicao)) {
             return Optional.empty();
         }
@@ -56,15 +58,18 @@ public class DFS {
 
         if (node.fim()) return finalDoCaminho(node, raiz);
 
-        final var caminho = dfs(node);
-        caminho.map((caminho1) -> caminho1.add(raiz));
+        final var maybeCaminho = dfs(node)
+                .map((caminho) -> {
+                    caminho.add(raiz);
+                    return caminho;
+                });
 
-        if (caminho.isEmpty()) {
+        if (maybeCaminho.isEmpty()) {
             //noinspection ResultOfMethodCallIgnored
             api.proxMovimento(raiz);
         }
 
-        return caminho;
+        return maybeCaminho;
     }
 
     @Contract("_, _ -> new")
