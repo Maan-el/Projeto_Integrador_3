@@ -46,7 +46,10 @@ public class ChamoAPI {
         return response.body();
     }
 
-    final public String inicio() throws IOException, InterruptedException {
+    final public Node inicio() throws IOException, InterruptedException {
+        final String json = parser
+                .newInicio()
+                .transform(parser.fromInicio());
 
         final var inicio = new Inicio(this.id, this.nomeLabirinto);
         final String json = gson.toJson(inicio);
@@ -61,12 +64,13 @@ public class ChamoAPI {
      * @throws InterruptedException ^C (Processo cancelado)
      */
     @Contract(pure = true)
-    final public @NotNull String proxMovimento(final int no) throws IOException, InterruptedException {
-        final var movimento = new Movimento(this.id, this.nomeLabirinto, no);
-        final String json = gson.toJson(movimento);
     final public @NotNull Node proxMovimento(final int posicao) throws IOException, InterruptedException {
+        final String json = parser
+                .newMovimento(posicao)
+                .transform(parser.fromMovimento());
 
-        return sendRequest(this.movimento, json);
+        return sendRequest(this.movimento, json)
+                .transform(parser.toNode());
     }
 
     /**
