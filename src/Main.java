@@ -13,7 +13,6 @@ public class Main {
 
         final long inicio = System.nanoTime();
 
-        System.out.println(api.getLabirinto());
         CaminhoValidado caminhoValidado = null;
 
         try {

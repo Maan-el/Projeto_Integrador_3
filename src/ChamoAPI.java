@@ -39,7 +39,11 @@ public class ChamoAPI {
      */
     @Contract(pure = true)
     final public String getNomes() throws IOException, InterruptedException {
-        final var request = HttpRequest.newBuilder().GET().uri(this.nome).build();
+        final var request = HttpRequest
+                .newBuilder()
+                .GET()
+                .uri(this.nome)
+                .build();
 
         final var response = client.send(request, getOfString());
 
