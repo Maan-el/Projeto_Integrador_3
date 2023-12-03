@@ -1,8 +1,4 @@
-import com.google.gson.Gson;
-import comunicacao.CaminhoParaValidar;
-import comunicacao.CaminhoValidado;
-import comunicacao.Inicio;
-import comunicacao.Movimento;
+import comunicacao.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +8,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.function.Function;
 
 public class ChamoAPI {
     private final Parser parser;
