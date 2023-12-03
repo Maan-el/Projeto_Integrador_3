@@ -14,11 +14,11 @@ public class DFS {
     @NotNull
     private final ChamoAPI ChamoAPI;
     @NotNull
-    private final HashSet<Integer> visitados = new HashSet<>();
-    private final Gson gson = new Gson();
+    private final HashSet<Integer> visitados;
 
     public DFS(@NotNull final ChamoAPI chamoApi) {
-        ChamoAPI = chamoApi;
+        this.ChamoAPI = chamoApi;
+        this.visitados = new HashSet<>();
     }
 
     final public @NotNull ArrayList<Integer> inicio() throws IOException, InterruptedException {
