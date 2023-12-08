@@ -1,19 +1,26 @@
 import comunicacao.CaminhoValidado;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ChamoAPI api = new ChamoAPI();
+
+        System.out.println("Insira nome do labirinto a ser explorado");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        String nomeLabirinto = bufferedReader.readLine();
+        api.setNomeLabirinto(nomeLabirinto);
 
         DFS dfs = new DFS(api);
 
         ArrayList<Integer> movimentos = null;
 
+        System.out.println("Acessando " + api.getLabirinto());
         final long inicio = System.nanoTime();
 
-        System.out.println(api.getLabirinto());
         CaminhoValidado caminhoValidado = null;
 
         try {

@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class ChamoAPI {
     private final Gson gson;
     private final HttpClient client;
-    private final String nomeLabirinto;
+    private String nomeLabirinto;
     private final String id;
     private final URI nome;
     private final URI inicio;
@@ -27,13 +27,16 @@ public class ChamoAPI {
     @Contract(pure = true)
     public ChamoAPI() {
         id = "Um-Grupo";
-        nomeLabirinto = "large-maze";
         gson = new Gson();
         nome = URI.create("https://gtm.delary.dev/" + "labirintos");
         inicio = URI.create("https://gtm.delary.dev/" + "iniciar");
         movimento = URI.create("https://gtm.delary.dev/" + "movimentar");
         validacao = URI.create("https://gtm.delary.dev/" + "validar_caminho");
         client = HttpClient.newHttpClient();
+    }
+
+    public final void setNomeLabirinto(final String nomeLabirinto) {
+        this.nomeLabirinto = nomeLabirinto;
     }
 
     @NotNull
